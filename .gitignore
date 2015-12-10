@@ -14,5 +14,10 @@
 /dist
 /lib
 /ecbin
-plugin-build.xml
 /bin
+plugin-build.xml
+i18n-scraper.groovy
+
+# ignore RPX files
+*.rpxconfig
+*TVT-Map_build*.txt
