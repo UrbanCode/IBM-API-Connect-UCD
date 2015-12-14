@@ -58,6 +58,14 @@
       </delivery>
     </dependency>
 
+    <dependency>
+      <cs-project name="RPX"/>
+      <criteria status="Success"/>
+      <delivery artifact-set="Default">
+        <directory>lib/build/rpx</directory>
+      </delivery>
+    </dependency>
+
     <!-- ############################################################ -->
     <!-- TEST                                                         -->
     <!-- ############################################################ -->
