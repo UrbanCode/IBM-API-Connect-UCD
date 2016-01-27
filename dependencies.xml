@@ -66,6 +66,14 @@
       </delivery>
     </dependency>
 
+    <dependency>
+      <cs-project name="CHKPII"/>
+      <criteria status="success"/>
+      <delivery artifact-set="Default">
+        <directory>lib/build/chkpii</directory>
+      </delivery>
+    </dependency>
+
     <!-- ############################################################ -->
     <!-- TEST                                                         -->
     <!-- ############################################################ -->
