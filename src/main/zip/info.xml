@@ -17,8 +17,8 @@
       <release-note plugin-version="1">....</release-note>
     -->
 
-    <release-note plugin-version="">
-
+    <release-note plugin-version="1">
+      Initial release. Installing this plugin will give you access to the steps listed below.
     </release-note>
 
   </release-notes>
