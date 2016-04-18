@@ -1,0 +1,311 @@
+{
+    "securityResourceId": "a054c2da-0caa-45f0-bfcd-ffacb29ad527",
+    "path": "componentTemplates\/e0884e23-b733-4781-a5c4-ee6f2b0f8944",
+    "name": "API Connect Template - Publish Loopback app to Runtime",
+    "description": "An API Connect component template to set configuration variables and publish a Loopback application to a provider app.",
+    "ignoreQualifiers": 0,
+    "componentType": "STANDARD",
+    "tags": [],
+    "active": true,
+    "envPropDefs": [],
+    "propDefs": [
+        {
+            "name": "apic.server",
+            "label": "Server",
+            "pattern": "",
+            "type": "TEXT",
+            "required": true,
+            "description": "The specified API Connect management server endpoint. Ex. http:127.0.0.1:9000",
+            "placeholder": ""
+        },
+        {
+            "name": "apic.username",
+            "label": "Username",
+            "pattern": "",
+            "type": "TEXT",
+            "required": true,
+            "description": "Username to authenticate with the API Connect management server.",
+            "placeholder": ""
+        },
+        {
+            "name": "apic.password",
+            "label": "Password",
+            "pattern": "",
+            "type": "TEXT",
+            "required": true,
+            "description": "Password to authenticate with the API Connect management server.",
+            "placeholder": ""
+        },
+        {
+            "name": "apic.path",
+            "label": "apic Command Line Tool",
+            "pattern": "",
+            "type": "TEXT",
+            "required": false,
+            "description": "Full path to the 'apic' command line tool. Example: 'C:\\Users\\IBM_ADMIN\\AppData\\Roaming\\npm\\apic.cmd'",
+            "placeholder": ""
+        },
+        {
+            "name": "apic.organization",
+            "label": "Organization",
+            "pattern": "",
+            "type": "TEXT",
+            "required": true,
+            "description": "Provider organization name.",
+            "placeholder": ""
+        },
+        {
+            "name": "apic.projectType",
+            "label": "Project Type",
+            "pattern": "",
+            "type": "SELECT",
+            "value": "Default",
+            "required": false,
+            "description": "The type of project desired to log into.",
+            "placeholder": "",
+            "allowedValues": [
+                {
+                    "label": "Default",
+                    "value": "Default"
+                },
+                {
+                    "label": "app",
+                    "value": "app"
+                },
+                {
+                    "label": "catalog",
+                    "value": "catalog"
+                }
+            ]
+        },
+        {
+            "name": "apic.app",
+            "label": "App Config Variable",
+            "pattern": "",
+            "type": "TEXT",
+            "required": false,
+            "description": "The name provides the default identity of a app or catalog for all the commands that are used to manage aspects of an app or catalog.",
+            "placeholder": ""
+        },
+        {
+            "name": "apic.catalog",
+            "label": "Catalog Config Variable",
+            "pattern": "",
+            "type": "TEXT",
+            "required": false,
+            "description": "The name provides the default identity of a app or catalog for all the commands that are used to manage aspects of an app or catalog.",
+            "placeholder": ""
+        },
+        {
+            "name": "apic.loopback",
+            "label": "Loopback App",
+            "pattern": "",
+            "type": "TEXT",
+            "required": true,
+            "description": "Provider Loopback app target for the publish.",
+            "placeholder": ""
+        }
+    ],
+    "properties": [],
+    "processes": [{
+        "name": "Publish Loopback App to Runtime",
+        "description": "",
+        "defaultWorkingDir": "${p:resource\/work.dir}\/${p:component.name}",
+        "takesVersion": true,
+        "inventoryActionType": "ADD",
+        "status": "Active",
+        "configActionType": "ADD",
+        "active": true,
+        "path": "componentTemplates\/e0884e23-b733-4781-a5c4-ee6f2b0f8944\/processes\/2a4fba30-22ee-45be-891a-f3a3a9d22b86",
+        "propDefs": [],
+        "rootActivity": {
+            "edges": [
+                {
+                    "to": "Login",
+                    "type": "ALWAYS",
+                    "value": ""
+                },
+                {
+                    "to": "Set Configuration Variable - App",
+                    "from": "Login",
+                    "type": "SUCCESS",
+                    "value": ""
+                },
+                {
+                    "to": "Logout",
+                    "from": "Publish Application to Provider App",
+                    "type": "ALWAYS",
+                    "value": ""
+                },
+                {
+                    "to": "Set Configuration Variable - Catalog",
+                    "from": "Set Configuration Variable - App",
+                    "type": "ALWAYS",
+                    "value": ""
+                },
+                {
+                    "to": "Publish Application to Provider App",
+                    "from": "Set Configuration Variable - Catalog",
+                    "type": "ALWAYS",
+                    "value": ""
+                },
+                {
+                    "to": "c5fb90dda0c133abf0ee910cfe9415",
+                    "from": "Logout",
+                    "type": "SUCCESS",
+                    "value": ""
+                }
+            ],
+            "offsets": [
+                {
+                    "name": "c5fb90dda0c133abf0ee910cfe9415",
+                    "x": -5,
+                    "y": 670,
+                    "h": 50,
+                    "w": 90
+                },
+                {
+                    "name": "Set Configuration Variable - Catalog",
+                    "x": -95,
+                    "y": 320,
+                    "h": 60,
+                    "w": 270
+                },
+                {
+                    "name": "Set Configuration Variable - App",
+                    "x": -85,
+                    "y": 200,
+                    "h": 60,
+                    "w": 250
+                },
+                {
+                    "name": "Publish Application to Provider App",
+                    "x": -110,
+                    "y": 434,
+                    "h": 60,
+                    "w": 300
+                },
+                {
+                    "name": "Logout",
+                    "x": -35,
+                    "y": 560,
+                    "h": 60,
+                    "w": 150
+                },
+                {
+                    "name": "Login",
+                    "x": -30,
+                    "y": 97,
+                    "h": 60,
+                    "w": 140
+                }
+            ],
+            "type": "graph",
+            "name": "800eb660-d704-4d01-96a6-732edcabc90c",
+            "children": [
+                {
+                    "type": "finish",
+                    "name": "c5fb90dda0c133abf0ee910cfe9415",
+                    "children": []
+                },
+                {
+                    "allowFailure": false,
+                    "useImpersonation": false,
+                    "showHidden": false,
+                    "impersonationUseSudo": false,
+                    "commandName": "Login",
+                    "pluginName": "IBM API Connect",
+                    "pluginVersion": 1,
+                    "properties": {
+                        "server": "${p:component\/apic.server}",
+                        "username": "${p:component\/apic.username}",
+                        "password": "${p:component\/apic.password}",
+                        "type": "Default",
+                        "apicPath": "${p?:component\/apic.path}"
+                    },
+                    "type": "plugin",
+                    "name": "Login",
+                    "children": []
+                },
+                {
+                    "allowFailure": false,
+                    "useImpersonation": false,
+                    "showHidden": false,
+                    "impersonationUseSudo": false,
+                    "commandName": "Logout",
+                    "pluginName": "IBM API Connect",
+                    "pluginVersion": 1,
+                    "properties": {
+                        "server": "${p:component\/apic.server}",
+                        "apicPath": "${p?:component\/apic.path}"
+                    },
+                    "type": "plugin",
+                    "name": "Logout",
+                    "children": []
+                },
+                {
+                    "allowFailure": false,
+                    "useImpersonation": false,
+                    "showHidden": false,
+                    "impersonationUseSudo": false,
+                    "commandName": "Set Configuration Variable",
+                    "pluginName": "IBM API Connect",
+                    "pluginVersion": 1,
+                    "properties": {
+                        "server": "${p:component\/apic.server}",
+                        "organization": "${p:component\/apic.organization}",
+                        "type": "app",
+                        "name": "${p:component\/apic.app}",
+                        "local": "false",
+                        "global": "false",
+                        "apicPath": "${p?:component\/apic.path}"
+                    },
+                    "type": "plugin",
+                    "name": "Set Configuration Variable - App",
+                    "children": []
+                },
+                {
+                    "allowFailure": false,
+                    "useImpersonation": false,
+                    "showHidden": false,
+                    "impersonationUseSudo": false,
+                    "commandName": "Set Configuration Variable",
+                    "pluginName": "IBM API Connect",
+                    "pluginVersion": 1,
+                    "properties": {
+                        "server": "${p:component\/apic.server}",
+                        "organization": "${p:component\/apic.organization}",
+                        "type": "catalog",
+                        "name": "${p:component\/apic.catalog}",
+                        "local": "false",
+                        "global": "false",
+                        "apicPath": "${p?:component\/apic.path}"
+                    },
+                    "type": "plugin",
+                    "name": "Set Configuration Variable - Catalog",
+                    "children": []
+                },
+                {
+                    "allowFailure": false,
+                    "useImpersonation": false,
+                    "showHidden": false,
+                    "impersonationUseSudo": false,
+                    "commandName": "Publish Application to Provider App",
+                    "pluginName": "IBM API Connect",
+                    "pluginVersion": 1,
+                    "properties": {
+                        "server": "${p:component\/apic.server}",
+                        "organization": "${p:component\/apic.organization}",
+                        "app": "${p:component\/apic.loopback}",
+                        "apicPath": "${p?:component\/apic.path}"
+                    },
+                    "type": "plugin",
+                    "name": "Publish Application to Provider App",
+                    "children": []
+                }
+            ]
+        }
+    }],
+    "genericProcesses": [],
+    "teamMappings": []
+}

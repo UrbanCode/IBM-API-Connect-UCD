@@ -1,0 +1,285 @@
+{
+    "securityResourceId": "50484786-4bb6-42ee-a2d6-c55233846262",
+    "path": "componentTemplates\/b5d6a286-23fa-4c21-9b1c-2bfc46206d3f",
+    "name": "API Connect Template - Push and Publish API Definition or Product",
+    "description": "An API Connect component template to push and publish an API Definition or Product",
+    "ignoreQualifiers": 0,
+    "componentType": "STANDARD",
+    "tags": [],
+    "active": true,
+    "sourceConfigProperties": [],
+    "envPropDefs": [],
+    "propDefs": [
+        {
+            "name": "apic.path",
+            "label": "apic Command Line Tool",
+            "pattern": "",
+            "type": "TEXT",
+            "required": false,
+            "description": "Full path to the 'apic' command line tool. Example: 'C:\\Users\\IBM_ADMIN\\AppData\\Roaming\\npm\\apic.cmd'",
+            "placeholder": ""
+        },
+        {
+            "name": "apic.definition",
+            "label": "Definition",
+            "pattern": "",
+            "type": "TEXT",
+            "required": true,
+            "description": "The full path of a .yaml file containing the API or Product definition.",
+            "placeholder": ""
+        },
+        {
+            "name": "apic.replaceNamedVersion",
+            "label": "Replace Named Version",
+            "pattern": "",
+            "type": "TEXT",
+            "required": false,
+            "description": "Replace a differently named\/versioned defintion. The property should take the following format: 'Name:Version' For example: 'climbon: 1.0.0'",
+            "placeholder": ""
+        },
+        {
+            "name": "apic.catalog",
+            "label": "Catalog",
+            "pattern": "",
+            "type": "TEXT",
+            "required": false,
+            "description": "The catalog's name that is being deployed to.",
+            "placeholder": ""
+        },
+        {
+            "name": "apic.server",
+            "label": "Server",
+            "pattern": "",
+            "type": "TEXT",
+            "required": true,
+            "description": "The specified API Connect management server endpoint. Ex. http:127.0.0.1:9000",
+            "placeholder": ""
+        },
+        {
+            "name": "apic.username",
+            "label": "Username",
+            "pattern": "",
+            "type": "TEXT",
+            "required": true,
+            "description": "\t Username to authenticate with the API Connect management server.",
+            "placeholder": ""
+        },
+        {
+            "name": "apic.password",
+            "label": "Password",
+            "pattern": "",
+            "type": "SECURE",
+            "required": false,
+            "description": "Password to authenticate with the API Connect management server.",
+            "placeholder": ""
+        },
+        {
+            "name": "apic.organization",
+            "label": "Organization",
+            "pattern": "",
+            "type": "TEXT",
+            "required": true,
+            "description": "Provider organization name.",
+            "placeholder": ""
+        },
+        {
+            "name": "apic.projectType",
+            "label": "Project Type",
+            "pattern": "",
+            "type": "SELECT",
+            "value": "Default",
+            "required": false,
+            "description": "The type of project desired to log into.",
+            "placeholder": "",
+            "allowedValues": [
+                {
+                    "label": "Default",
+                    "value": "Default"
+                },
+                {
+                    "label": "app",
+                    "value": "app"
+                },
+                {
+                    "label": "catalog",
+                    "value": "catalog"
+                }
+            ]
+        }
+    ],
+    "properties": [],
+    "processes": [{
+        "name": "Push and Publish Product or API Definition",
+        "description": "",
+        "defaultWorkingDir": "${p:resource\/work.dir}\/${p:component.name}",
+        "takesVersion": true,
+        "inventoryActionType": "ADD",
+        "status": "Active",
+        "configActionType": "ADD",
+        "active": true,
+        "path": "componentTemplates\/b5d6a286-23fa-4c21-9b1c-2bfc46206d3f\/processes\/21fdfa69-437c-4d8d-ab9b-34f5cfe11525",
+        "propDefs": [],
+        "rootActivity": {
+            "edges": [
+                {
+                    "to": "defcbdffc2656fa8a654b138c3ca22",
+                    "from": "Logout",
+                    "type": "SUCCESS",
+                    "value": ""
+                },
+                {
+                    "to": "Push Local API or Product Definitions to Drafts",
+                    "from": "Login",
+                    "type": "SUCCESS",
+                    "value": ""
+                },
+                {
+                    "to": "defcbdffc2656fa8a654b138c3ca22",
+                    "from": "Push Local API or Product Definitions to Drafts",
+                    "type": "FAILURE",
+                    "value": ""
+                },
+                {
+                    "to": "Publish API and Product Definitions",
+                    "from": "Push Local API or Product Definitions to Drafts",
+                    "type": "SUCCESS",
+                    "value": ""
+                },
+                {
+                    "to": "Logout",
+                    "from": "Publish API and Product Definitions",
+                    "type": "ALWAYS",
+                    "value": ""
+                },
+                {
+                    "to": "Login",
+                    "type": "ALWAYS",
+                    "value": ""
+                }
+            ],
+            "offsets": [
+                {
+                    "name": "Push Local API or Product Definitions to Drafts",
+                    "x": -140,
+                    "y": 190,
+                    "h": 60,
+                    "w": 360
+                },
+                {
+                    "name": "Publish API and Product Definitions",
+                    "x": 214.5,
+                    "y": 316,
+                    "h": 60,
+                    "w": 300
+                },
+                {
+                    "name": "Logout",
+                    "x": 198.5,
+                    "y": 424,
+                    "h": 60,
+                    "w": 150
+                },
+                {
+                    "name": "Login",
+                    "x": -30,
+                    "y": 90,
+                    "h": 60,
+                    "w": 140
+                },
+                {
+                    "name": "defcbdffc2656fa8a654b138c3ca22",
+                    "x": -5,
+                    "y": 510,
+                    "h": 50,
+                    "w": 90
+                }
+            ],
+            "type": "graph",
+            "name": "796c330c-57b4-4a42-9fdd-5c7f230d61a0",
+            "children": [
+                {
+                    "type": "finish",
+                    "name": "defcbdffc2656fa8a654b138c3ca22",
+                    "children": []
+                },
+                {
+                    "allowFailure": false,
+                    "useImpersonation": false,
+                    "showHidden": false,
+                    "impersonationUseSudo": false,
+                    "commandName": "Login",
+                    "pluginName": "IBM API Connect",
+                    "pluginVersion": 1,
+                    "properties": {
+                        "server": "${p:component\/apic.server}",
+                        "username": "${p:component\/apic.username}",
+                        "password": "${p:component\/apic.password}",
+                        "type": "Default",
+                        "apicPath": "${p?:component\/apic.path}"
+                    },
+                    "type": "plugin",
+                    "name": "Login",
+                    "children": []
+                },
+                {
+                    "allowFailure": false,
+                    "useImpersonation": false,
+                    "showHidden": false,
+                    "impersonationUseSudo": false,
+                    "commandName": "Push Local API or Product Definitions to Drafts",
+                    "pluginName": "IBM API Connect",
+                    "pluginVersion": 1,
+                    "properties": {
+                        "server": "${p:component\/apic.server}",
+                        "organization": "${p:component\/apic.organization}",
+                        "definition": "${p:component\/apic.definition}",
+                        "replace": "${p?:component\/apic.replaceNameVersion}",
+                        "productOnly": "false",
+                        "apicPath": "${p?:component\/apic.path}"
+                    },
+                    "type": "plugin",
+                    "name": "Push Local API or Product Definitions to Drafts",
+                    "children": []
+                },
+                {
+                    "allowFailure": false,
+                    "useImpersonation": false,
+                    "showHidden": false,
+                    "impersonationUseSudo": false,
+                    "commandName": "Publish API and Product Definitions",
+                    "pluginName": "IBM API Connect",
+                    "pluginVersion": 1,
+                    "properties": {
+                        "server": "${p:component\/apic.server}",
+                        "organization": "${p:component\/apic.organization}",
+                        "catalog": "${p:component\/apic.catalog}",
+                        "definition": "${p:component\/apic.definition}",
+                        "stage": "false",
+                        "apicPath": "${p?:component\/apic.path}"
+                    },
+                    "type": "plugin",
+                    "name": "Publish API and Product Definitions",
+                    "children": []
+                },
+                {
+                    "allowFailure": false,
+                    "useImpersonation": false,
+                    "showHidden": false,
+                    "impersonationUseSudo": false,
+                    "commandName": "Logout",
+                    "pluginName": "IBM API Connect",
+                    "pluginVersion": 1,
+                    "properties": {
+                        "server": "${p:component\/apic.server}",
+                        "apicPath": "${p?:component\/apic.path}"
+                    },
+                    "type": "plugin",
+                    "name": "Logout",
+                    "children": []
+                }
+            ]
+        }
+    }],
+    "genericProcesses": [],
+    "teamMappings": []
+}
