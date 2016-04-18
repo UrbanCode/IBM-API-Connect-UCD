@@ -10,19 +10,49 @@
 
 <plugin xmlns="http://www.urbancode.com/PluginXMLSchema_v1" xmlns:server="http://www.urbancode.com/PluginServerXMLSchema_v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <header>
-    <identifier id="com.urbancode.air.plugin.pluginName" name="Plugin Name" version="1"/>
+    <identifier id="com.urbancode.air.plugin.apiconnect" name="IBM API Connect" version="1"/>
     <description>
-      Description
+      This plug-in includes steps to work with IBM API Connect when developing and publishing APIs and LoopBack applications.
     </description>
-    <tag>step/location</tag>
+    <tag>IBM API Management/IBM API Connect</tag>
   </header>
-  <step-type name="StepTypeName">
-    <description>Description</description>
+  <step-type name="Login">
+    <description>Authenticate with an API Connect cloud through the management server. This step is a prerequisite for all other steps in the IBM API Connect plug-in.</description>
     <properties>
-      <property name="dirOffset">
+      <property name="server" required="true">
         <property-ui type="textBox"
-                     label="Directory Offset"
-                     description="The directory offset relative to the current working directory where the step should run."/>
+                     label="Server"
+                     default-value="${p:component/apic.server}"
+                     description="Specify the API Connect management server endpoint to authenticate with. For example, the IBM Bluemix endpoint is us.apiconnect.ibmcloud.com."/>
+      </property>
+      <property name="username" required="true">
+        <property-ui type="textBox"
+                     label="Username"
+                     default-value="${p:apic.username}"
+                     description="User name to use to authenticate with the API Connect management server."/>
+      </property>
+      <property name="password" required="true">
+        <property-ui type="secureBox"
+                     label="Password"
+                     default-value="${p:apic.password}"
+                     description="Password to use to authenticate with the API Connect management server."/>
+      </property>
+      <property name="type" required="false">
+        <property-ui type="selectBox"
+                     label="Type"
+                     default-value="${p:component/apic.projectType}"
+                     description="The type of project to log in to."/>
+                <value label="Default">Default</value>
+                <value label="App">app</value>
+                <value label="Catalog">catalog</value>
+
+      </property>
+      <property name="apicPath" required="false">
+        <property-ui type="textBox"
+                     hidden="true"
+                     label="APIC Tool Path"
+                     default-value="${p?:component/apic.path}"
+                     description="The full path to the apic command-line tool. For example: C:\Users\John\AppData\Roaming\npm\apic.cmd"/>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -36,7 +66,271 @@
     <command program="${GROOVY_HOME}/bin/groovy">
       <arg value="-cp"/>
       <arg path="classes"/>
-      <arg file="cmd.groovy"/>
+      <arg file="login.groovy"/>
+      <arg file="${PLUGIN_INPUT_PROPS}"/>
+      <arg file="${PLUGIN_OUTPUT_PROPS}"/>
+    </command>
+  </step-type>
+  <step-type name="Logout">
+    <description>Remove local authentication credentials for an API Connect cloud. Run this step at the end of each deployment process.</description>
+    <properties>
+      <property name="server" required="true">
+        <property-ui type="textBox"
+                     label="Server"
+                     default-value="${p:component/apic.server}"
+                     description="Specify the API Connect management server endpoint to remove credentials from. For example, the IBM Bluemix endpoint is us.apiconnect.ibmcloud.com."/>
+      </property>
+      <property name="apicPath" required="false">
+        <property-ui type="textBox"
+                     hidden="true"
+                     label="APIC Tool Path"
+                     default-value="${p?:component/apic.path}"
+                     description="The full path to the apic command-line tool. For example: C:\Users\John\AppData\Roaming\npm\apic.cmd"/>
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+        if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp"/>
+      <arg path="classes"/>
+      <arg file="logout.groovy"/>
+      <arg file="${PLUGIN_INPUT_PROPS}"/>
+      <arg file="${PLUGIN_OUTPUT_PROPS}"/>
+    </command>
+  </step-type>
+  <step-type name="Push Local API or Product Definitions to Drafts">
+    <description>Push local APIs or product definitions to drafts on an API Connect cloud.</description>
+    <properties>
+      <property name="server" required="true">
+        <property-ui type="textBox"
+                     label="Server"
+                     default-value="${p:component/apic.server}"
+                     description="Specify the management server endpoint to push to. For example, the IBM Bluemix endpoint is us.apiconnect.ibmcloud.com."/>
+      </property>
+      <property name="organization" required="true">
+        <property-ui type="textBox"
+                     label="Organization"
+                     default-value="${p:component/apic.organization}"
+                     description="Provider organization name."/>
+      </property>
+      <property name="definition" required="true">
+        <property-ui type="textBox"
+                     label="API or Product Definition"
+                     default-value="${p:component/apic.definition}"
+                     description="The full path to a YAML file that contains the API or product definition."/>
+      </property>
+      <property name="replace" required="false">
+        <property-ui type="textBox"
+                     label="Replace Named Version"
+                     default-value="${p?:component/apic.replaceNameVersion}"
+                     description="Specify the name and version of a definition to replace. Use the following format: Name:Version. For example: climbon:1.0.0"/>
+      </property>
+      <property name="productOnly" required="false">
+        <property-ui type="checkBox"
+                     label="Product Only"
+                     default-value="false"
+                     description="Select to push the product only, and not the referenced APIs."/>
+      </property>
+      <property name="apicPath" required="false">
+        <property-ui type="textBox"
+                     hidden="true"
+                     label="APIC Tool Path"
+                     default-value="${p?:component/apic.path}"
+                     description="The full path to the apic command-line tool. For example: C:\Users\John\AppData\Roaming\npm\apic.cmd"/>
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+        if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp"/>
+      <arg path="classes"/>
+      <arg file="draftsPush.groovy"/>
+      <arg file="${PLUGIN_INPUT_PROPS}"/>
+      <arg file="${PLUGIN_OUTPUT_PROPS}"/>
+    </command>
+  </step-type>
+  <step-type name="Publish API and Product Definitions">
+    <description>Publish and deploy and product and referenced APIs to a catalog.</description>
+    <properties>
+      <property name="server" required="true">
+        <property-ui type="textBox"
+                     label="Server"
+                     default-value="${p:component/apic.server}"
+                     description="Specify the management server endpoint to publish to. For example, the IBM Bluemix endpoint is us.apiconnect.ibmcloud.com."/>
+      </property>
+      <property name="organization" required="true">
+        <property-ui type="textBox"
+                     label="Organization"
+                     default-value="${p:component/apic.organization}"
+                     description="Provider organization name."/>
+      </property>
+      <property name="catalog" required="true">
+        <property-ui type="textBox"
+                     label="Catalog"
+                     default-value="${p:component/apic.catalog}"
+                     description="The name of the catalog to deploy to."/>
+      </property>
+      <property name="definition" required="true">
+        <property-ui type="textBox"
+                     label="API or Product Definition"
+                     default-value="${p:component/apic.definition}"
+                     description="The full path to a YAML file that contains the API or product definition."/>
+      </property>
+      <property name="stage" required="false">
+        <property-ui type="checkBox"
+                     label="Stage Status"
+                     default-value="false"
+                     description="Select to leave the product in the staged state, instead of moving to the published state."/>
+      </property>
+      <property name="apicPath" required="false">
+        <property-ui type="textBox"
+                     hidden="true"
+                     label="APIC Tool Path"
+                     default-value="${p?:component/apic.path}"
+                     description="The full path to the apic command-line tool. For example: C:\Users\John\AppData\Roaming\npm\apic.cmd"/>
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+        if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp"/>
+      <arg path="classes"/>
+      <arg file="publish.groovy"/>
+      <arg file="${PLUGIN_INPUT_PROPS}"/>
+      <arg file="${PLUGIN_OUTPUT_PROPS}"/>
+    </command>
+  </step-type>
+  <step-type name="Publish Application to Provider App">
+    <description>Publish a Node.js (LoopBack) application to a provider application.</description>
+    <properties>
+      <property name="server" required="true">
+        <property-ui type="textBox"
+                     label="Server"
+                     default-value="${p:component/apic.server}"
+                     description="Specify the management server endpoint to publish to. For example, the IBM Bluemix endpoint is us.apiconnect.ibmcloud.com."/>
+      </property>
+      <property name="organization" required="true">
+        <property-ui type="textBox"
+                     label="Organization"
+                     default-value="${p:component/apic.organization}"
+                     description="Provider organization name."/>
+      </property>
+      <property name="app" required="true">
+        <property-ui type="textBox"
+                     label="Loopback App"
+                     default-value="${p:component/apic.app}"
+                     description="LoopBack application name."/>
+      </property>
+      <property name="projDir" required="true">
+        <property-ui type="textBox"
+                     label="Loopback Project Directory"
+                     default-value="${p:component/apic.projDir}"
+                     description="The full path to the directory that contains the LoopBack application."/>
+      </property>
+      <property name="apicPath" required="false">
+        <property-ui type="textBox"
+                     hidden="true"
+                     label="APIC Tool Path"
+                     default-value="${p?:component/apic.path}"
+                     description="The full path to the apic command-line tool. For example: C:\Users\John\AppData\Roaming\npm\apic.cmd"/>
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+        if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp"/>
+      <arg path="classes"/>
+      <arg file="appsPublish.groovy"/>
+      <arg file="${PLUGIN_INPUT_PROPS}"/>
+      <arg file="${PLUGIN_OUTPUT_PROPS}"/>
+    </command>
+  </step-type>
+  <step-type name="Set Configuration Variable">
+    <description>Set a configuration variable. You do not need to run the Login step before running this step. This is a wrapper step for the App and Catalog Identifier.
+    If you have access to the Identifier, run that command through the Shell step.</description>
+    <properties>
+      <property name="server" required="true">
+        <property-ui type="textBox"
+                     label="Server"
+                     default-value="${p:component/apic.server}"
+                     description="Specify the management server endpoint to set the variable on. For example, the IBM Bluemix endpoint is us.apiconnect.ibmcloud.com."/>
+      </property>
+      <property name="organization" required="true">
+        <property-ui type="textBox"
+                     label="Organization"
+                     default-value="${p:component/apic.organization}"
+                     description="Provider organization name."/>
+      </property>
+      <property name="type" required="true">
+        <property-ui type="selectBox"
+                     label="Config Variable Type"
+                     default-value=""
+                     description="Select the type of variable to configure."/>
+                <value label="App">app</value>
+                <value label="Catalog">catalog</value>
+      </property>
+      <property name="name" required="true">
+        <property-ui type="textBox"
+                     label="App or Catalog Name"
+                     default-value="${p:component/apic.app}"
+                     description="Specify a name of an application or catalog to configure."/>
+      </property>
+      <property name="local" required="false">
+        <property-ui type="checkBox"
+                     label="Local"
+                     default-value="false"
+                     description="Select to set the local application configuration variable."/>
+      </property>
+      <property name="global" required="false">
+        <property-ui type="checkBox"
+                     label="Global"
+                     default-value="false"
+                     description="Select to set the global configuration variable."/>
+      </property>
+      <property name="apicPath" required="false">
+        <property-ui type="textBox"
+                     hidden="true"
+                     label="APIC Tool Path"
+                     default-value="${p?:component/apic.path}"
+                     description="The full path to the apic command-line tool. For example: C:\Users\John\AppData\Roaming\npm\apic.cmd"/>
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+        if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp"/>
+      <arg path="classes"/>
+      <arg file="configSet.groovy"/>
       <arg file="${PLUGIN_INPUT_PROPS}"/>
       <arg file="${PLUGIN_OUTPUT_PROPS}"/>
     </command>

@@ -19,6 +19,11 @@
 
     <release-note plugin-version="1">
       Initial release. Installing this plugin will give you access to the steps listed below.
+		- Login
+		- Logout
+		- Push Product and API Definitions to Drafts
+		- Deploy Product and API Definitions
+		- Smoke Test
     </release-note>
 
   </release-notes>
