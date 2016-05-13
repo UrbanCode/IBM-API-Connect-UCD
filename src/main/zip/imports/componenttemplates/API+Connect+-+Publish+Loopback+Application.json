@@ -1,7 +1,7 @@
 {
     "securityResourceId": "a054c2da-0caa-45f0-bfcd-ffacb29ad527",
     "path": "componentTemplates\/e0884e23-b733-4781-a5c4-ee6f2b0f8944",
-    "name": "API Connect - Publish Loopback App to Runtime",
+    "name": "API Connect - Publish Loopback Application",
     "description": "An API Connect component template to set configuration variables and publish a Loopback application to a provider app.",
     "ignoreQualifiers": 0,
     "componentType": "STANDARD",
@@ -41,12 +41,12 @@
         },
         {
             "name": "apic.definition",
-            "label": "API Definition or Product",
+            "label": "API Product Defintions",
             "pattern": "",
             "type": "TEXT",
             "value": "<dir_home>\/acme-bank\/definitions\/acme-bank-product.yaml",
             "required": true,
-            "description": "The full path to a YAML file that contains the API or product definition.",
+            "description": "The full path to a YAML file that contains the API product definitions.",
             "placeholder": ""
         },
         {
@@ -124,7 +124,7 @@
     ],
     "properties": [],
     "processes": [{
-        "name": "Publish Loopback App to Runtime",
+        "name": "Publish Loopback Application",
         "description": "",
         "defaultWorkingDir": "${p:resource\/work.dir}\/${p:component.name}",
         "takesVersion": false,
@@ -135,32 +135,14 @@
         "rootActivity": {
             "edges": [
                 {
-                    "to": "Publish API and Product Definitions",
+                    "to": "Publish API Product Definitions",
                     "from": "Set Configuration Variable - Catalog",
                     "type": "ALWAYS",
                     "value": ""
                 },
                 {
-                    "to": "c5fb90dda0c133abf0ee910cfe9415",
-                    "from": "Logout",
-                    "type": "SUCCESS",
-                    "value": ""
-                },
-                {
-                    "to": "Logout",
-                    "from": "Publish API and Product Definitions",
-                    "type": "FAILURE",
-                    "value": ""
-                },
-                {
-                    "to": "Publish Application to Provider App",
-                    "from": "Publish API and Product Definitions",
-                    "type": "SUCCESS",
-                    "value": ""
-                },
-                {
-                    "to": "Logout",
-                    "from": "Publish Application to Provider App",
+                    "to": "Set Configuration Variable - App",
+                    "from": "Login",
                     "type": "ALWAYS",
                     "value": ""
                 },
@@ -171,25 +153,36 @@
                     "value": ""
                 },
                 {
+                    "to": "Logout",
+                    "from": "Publish API Product Definitions",
+                    "type": "FAILURE",
+                    "value": ""
+                },
+                {
                     "to": "Login",
                     "type": "ALWAYS",
                     "value": ""
                 },
                 {
-                    "to": "Set Configuration Variable - App",
-                    "from": "Login",
+                    "to": "Publish an Application",
+                    "from": "Publish API Product Definitions",
+                    "type": "SUCCESS",
+                    "value": ""
+                },
+                {
+                    "to": "Logout",
+                    "from": "Publish an Application",
                     "type": "ALWAYS",
+                    "value": ""
+                },
+                {
+                    "to": "c5fb90dda0c133abf0ee910cfe9415",
+                    "from": "Logout",
+                    "type": "SUCCESS",
                     "value": ""
                 }
             ],
             "offsets": [
-                {
-                    "name": "c5fb90dda0c133abf0ee910cfe9415",
-                    "x": -5,
-                    "y": 790,
-                    "h": 50,
-                    "w": 90
-                },
                 {
                     "name": "Set Configuration Variable - Catalog",
                     "x": -95,
@@ -198,25 +191,18 @@
                     "w": 270
                 },
                 {
-                    "name": "Logout",
-                    "x": -35,
-                    "y": 670,
+                    "name": "Set Configuration Variable - App",
+                    "x": -85,
+                    "y": 210,
                     "h": 60,
-                    "w": 150
+                    "w": 250
                 },
                 {
-                    "name": "Publish Application to Provider App",
-                    "x": 110,
-                    "y": 550,
-                    "h": 60,
-                    "w": 300
-                },
-                {
-                    "name": "Publish API and Product Definitions",
-                    "x": -110,
+                    "name": "Publish API Product Definitions",
+                    "x": -100,
                     "y": 430,
                     "h": 60,
-                    "w": 300
+                    "w": 280
                 },
                 {
                     "name": "Login",
@@ -226,15 +212,29 @@
                     "w": 140
                 },
                 {
-                    "name": "Set Configuration Variable - App",
-                    "x": -81.5,
-                    "y": 210,
+                    "name": "Logout",
+                    "x": -35,
+                    "y": 660,
                     "h": 60,
-                    "w": 250
+                    "w": 150
+                },
+                {
+                    "name": "Publish an Application",
+                    "x": 128.5,
+                    "y": 536,
+                    "h": 60,
+                    "w": 230
+                },
+                {
+                    "name": "c5fb90dda0c133abf0ee910cfe9415",
+                    "x": -5,
+                    "y": 790,
+                    "h": 50,
+                    "w": 90
                 }
             ],
             "type": "graph",
-            "name": "1c602382-826e-4f6f-a665-0da3306592df",
+            "name": "fd1720e7-ba23-4b38-be8f-efcf85c3b0ca",
             "children": [
                 {
                     "type": "finish",
@@ -248,7 +248,7 @@
                     "impersonationUseSudo": false,
                     "commandName": "Login",
                     "pluginName": "IBM API Connect",
-                    "pluginVersion": 1,
+                    "pluginVersion": 2,
                     "properties": {
                         "server": "${p:component\/apic.server}",
                         "username": "${p:apic.username}",
@@ -267,7 +267,7 @@
                     "impersonationUseSudo": false,
                     "commandName": "Logout",
                     "pluginName": "IBM API Connect",
-                    "pluginVersion": 1,
+                    "pluginVersion": 2,
                     "properties": {
                         "server": "${p:component\/apic.server}",
                         "apicPath": "${p?:component\/apic.path}"
@@ -283,7 +283,7 @@
                     "impersonationUseSudo": false,
                     "commandName": "Set Configuration Variable",
                     "pluginName": "IBM API Connect",
-                    "pluginVersion": 1,
+                    "pluginVersion": 2,
                     "properties": {
                         "server": "${p:component\/apic.server}",
                         "organization": "${p:component\/apic.organization}",
@@ -304,7 +304,7 @@
                     "impersonationUseSudo": false,
                     "commandName": "Set Configuration Variable",
                     "pluginName": "IBM API Connect",
-                    "pluginVersion": 1,
+                    "pluginVersion": 2,
                     "properties": {
                         "server": "${p:component\/apic.server}",
                         "organization": "${p:component\/apic.organization}",
@@ -323,28 +323,9 @@
                     "useImpersonation": false,
                     "showHidden": false,
                     "impersonationUseSudo": false,
-                    "commandName": "Publish Application to Provider App",
+                    "commandName": "Publish API Product Definitions",
                     "pluginName": "IBM API Connect",
-                    "pluginVersion": 1,
-                    "properties": {
-                        "server": "${p:component\/apic.server}",
-                        "organization": "${p:component\/apic.organization}",
-                        "app": "${p:component\/apic.app}",
-                        "projDir": "${p:component\/apic.projDir}",
-                        "apicPath": "${p?:component\/apic.path}"
-                    },
-                    "type": "plugin",
-                    "name": "Publish Application to Provider App",
-                    "children": []
-                },
-                {
-                    "allowFailure": false,
-                    "useImpersonation": false,
-                    "showHidden": false,
-                    "impersonationUseSudo": false,
-                    "commandName": "Publish API and Product Definitions",
-                    "pluginName": "IBM API Connect",
-                    "pluginVersion": 1,
+                    "pluginVersion": 2,
                     "properties": {
                         "server": "${p:component\/apic.server}",
                         "organization": "${p:component\/apic.organization}",
@@ -354,7 +335,26 @@
                         "apicPath": "${p?:component\/apic.path}"
                     },
                     "type": "plugin",
-                    "name": "Publish API and Product Definitions",
+                    "name": "Publish API Product Definitions",
+                    "children": []
+                },
+                {
+                    "allowFailure": false,
+                    "useImpersonation": false,
+                    "showHidden": false,
+                    "impersonationUseSudo": false,
+                    "commandName": "Publish an Application",
+                    "pluginName": "IBM API Connect",
+                    "pluginVersion": 2,
+                    "properties": {
+                        "server": "${p:component\/apic.server}",
+                        "organization": "${p:component\/apic.organization}",
+                        "app": "${p:component\/apic.app}",
+                        "projDir": "${p:component\/apic.projDir}",
+                        "apicPath": "${p?:component\/apic.path}"
+                    },
+                    "type": "plugin",
+                    "name": "Publish an Application",
                     "children": []
                 }
             ]
