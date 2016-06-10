@@ -55,15 +55,15 @@ catch (Exception ex) {
 finally {
     // Print system output
     def output = helper.systemOutput
+    println "================================"
+    println "API Connect Output..."
     println output
+    println "================================"
 
-    // Logout failed because incorrect server or username never logged in... assume success
-    if (output.contains("ERROR User not logged in")){
-        println "[Warning] A user was never authenticated with the server or an incorrect server name was entered."
-    }
-    else if (output.contains("ERROR")){
+    // Regex is determine if the output contains the word "Error" - case insensitive.
+    if (output.matches(".*(?i)Error(.|\\n)*")){
         println "[Error] Unable to run the 'apic logout' command."
-        println "[Possible Solution] Confirm the server property is valid."
+        println "[Possible Solution] Confirm the server address."
         System.exit(1)
     }
     else {

@@ -92,26 +92,15 @@
         "rootActivity": {
             "edges": [
                 {
-                    "to": "Logout",
-                    "from": "Push API Product Definitions to Drafts",
-                    "type": "FAILURE",
-                    "value": ""
-                },
-                {
-                    "to": "Publish API Product Definitions",
-                    "from": "Push API Product Definitions to Drafts",
-                    "type": "SUCCESS",
-                    "value": ""
-                },
-                {
-                    "to": "Login",
-                    "type": "ALWAYS",
-                    "value": ""
-                },
-                {
                     "to": "defcbdffc2656fa8a654b138c3ca22",
                     "from": "Logout",
                     "type": "SUCCESS",
+                    "value": ""
+                },
+                {
+                    "to": "Logout",
+                    "from": "Publish API Product Definitions",
+                    "type": "ALWAYS",
                     "value": ""
                 },
                 {
@@ -121,34 +110,24 @@
                     "value": ""
                 },
                 {
+                    "to": "Publish API Product Definitions",
+                    "from": "Push API Product Definitions to Drafts",
+                    "type": "SUCCESS",
+                    "value": ""
+                },
+                {
                     "to": "Logout",
-                    "from": "Publish API Product Definitions",
+                    "from": "Push API Product Definitions to Drafts",
+                    "type": "FAILURE",
+                    "value": ""
+                },
+                {
+                    "to": "Login",
                     "type": "ALWAYS",
                     "value": ""
                 }
             ],
             "offsets": [
-                {
-                    "name": "defcbdffc2656fa8a654b138c3ca22",
-                    "x": -5,
-                    "y": 540,
-                    "h": 50,
-                    "w": 90
-                },
-                {
-                    "name": "Login",
-                    "x": -30,
-                    "y": 90,
-                    "h": 60,
-                    "w": 140
-                },
-                {
-                    "name": "Logout",
-                    "x": -35,
-                    "y": 430,
-                    "h": 60,
-                    "w": 150
-                },
                 {
                     "name": "Publish API Product Definitions",
                     "x": 110,
@@ -162,10 +141,31 @@
                     "y": 190,
                     "h": 60,
                     "w": 310
+                },
+                {
+                    "name": "defcbdffc2656fa8a654b138c3ca22",
+                    "x": -5,
+                    "y": 540,
+                    "h": 50,
+                    "w": 90
+                },
+                {
+                    "name": "Logout",
+                    "x": -35,
+                    "y": 430,
+                    "h": 60,
+                    "w": 150
+                },
+                {
+                    "name": "Login",
+                    "x": -30,
+                    "y": 90,
+                    "h": 60,
+                    "w": 140
                 }
             ],
             "type": "graph",
-            "name": "21e68b94-2d90-4768-b4c8-5f26757ef2e1",
+            "name": "7bac352e-8158-4526-b52c-5d6bb7b08ff2",
             "children": [
                 {
                     "type": "finish",
@@ -179,12 +179,11 @@
                     "impersonationUseSudo": false,
                     "commandName": "Login",
                     "pluginName": "IBM API Connect",
-                    "pluginVersion": 2,
+                    "pluginVersion": 3,
                     "properties": {
                         "server": "${p:component\/apic.server}",
                         "username": "${p:apic.username}",
                         "password": "${p:apic.password}",
-                        "type": "Default",
                         "apicPath": "${p?:component\/apic.path}"
                     },
                     "type": "plugin",
@@ -198,7 +197,7 @@
                     "impersonationUseSudo": false,
                     "commandName": "Push API Product Definitions to Drafts",
                     "pluginName": "IBM API Connect",
-                    "pluginVersion": 2,
+                    "pluginVersion": 3,
                     "properties": {
                         "server": "${p:component\/apic.server}",
                         "organization": "${p:component\/apic.organization}",
@@ -218,7 +217,7 @@
                     "impersonationUseSudo": false,
                     "commandName": "Publish API Product Definitions",
                     "pluginName": "IBM API Connect",
-                    "pluginVersion": 2,
+                    "pluginVersion": 3,
                     "properties": {
                         "server": "${p:component\/apic.server}",
                         "organization": "${p:component\/apic.organization}",
@@ -238,7 +237,7 @@
                     "impersonationUseSudo": false,
                     "commandName": "Logout",
                     "pluginName": "IBM API Connect",
-                    "pluginVersion": 2,
+                    "pluginVersion": 3,
                     "properties": {
                         "server": "${p:component\/apic.server}",
                         "apicPath": "${p?:component\/apic.path}"

@@ -10,7 +10,7 @@
 
 <plugin xmlns="http://www.urbancode.com/PluginXMLSchema_v1" xmlns:server="http://www.urbancode.com/PluginServerXMLSchema_v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <header>
-    <identifier id="com.urbancode.air.plugin.apiconnect" name="IBM API Connect" version="2"/>
+    <identifier id="com.urbancode.air.plugin.apiconnect" name="IBM API Connect" version="3"/>
     <description>
       This plug-in includes steps to work with IBM API Connect when developing and publishing APIs and LoopBack applications.
     </description>
@@ -36,16 +36,6 @@
                      label="Password"
                      default-value="${p:apic.password}"
                      description="Password to use to authenticate with the API Connect management server."/>
-      </property>
-      <property name="type" required="false">
-        <property-ui type="selectBox"
-                     label="Type"
-                     default-value="${p:component/apic.projectType}"
-                     description="The type of project to log in to."/>
-                <value label="Default">Default</value>
-                <value label="App">app</value>
-                <value label="Catalog">catalog</value>
-
       </property>
       <property name="apicPath" required="false">
         <property-ui type="textBox"

@@ -67,32 +67,16 @@ catch (Exception ex) {
 finally {
     // Print system output
     def output = helper.systemOutput
+    println "================================"
+    println "API Connect Output..."
     println output
+    println "================================"
 
-    // Iterate through the possible outputs
-    if (output.contains("ERROR Use 'apic login' to log into")){
-        println "[Possible Solution] Begin the process with the 'Login' step."
-        System.exit(1)
-    }
-    else if (output.contains("${definition} does not exist.")){
-        println "[Error] Unable to run the 'apic publish' command because the '${definition}' file could not be found."
-        println "[Possible Solution] Confirm the definition file is a valid property."
-        println "[Possible Solution] If you properties contain spaces, surround the properties with quotes. "
-        System.exit(1)
-    }
-    else if (output.contains("ERROR The product file provided is not valid")){
-        println "[Error] Unable to run the 'apic publish' command because the '${definition}' file is not a vaid product file."
-        println "[Possible Solution] Confirm the definition file is a valid property."
-        println "[Possible Solution] If you properties contain spaces, surround the properties with quotes. "
-        System.exit(1)
-    }
-    else if (output.contains("Please remove the product from the catalog before trying to stage it again.")){
-        println "[Error] Unable to run the 'apic drafts:push' command because a product already exists with the same name."
-        println "[Possible Solution] Remove the '${definition}' from the catalog."
-        System.exit(1)
-    }
-    else if (output.contains("ERROR")){
+    // Regex is determine if the output contains the word "Error" - case insensitive.
+    if (output.matches(".*(?i)Error(.|\\n)*")){
         println "[Error] Unable to run the 'apic publish' command."
+        println "[Possible Solution] Begin the process with the 'Login' step."
+        println "[Possible Solution] Confirm the definition file is a valid property or it doesn't already exist."
         println "[Possible Solution] Confirm the server, organization, catalog, and definition properties are valid."
         println "[Possible Solution] If you properties contain spaces, surround the properties with quotes. "
         System.exit(1)

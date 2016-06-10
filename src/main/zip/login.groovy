@@ -17,7 +17,6 @@ def props = apTool.getStepProperties()
 def server   = props['server']
 def username = props['username']
 def password = props['password']
-def type     = props['type']
 def apicPath = props['apicPath']
 
 final def isWindows = System.getProperty('os.name').contains("Windows")
@@ -28,10 +27,6 @@ def ch = new CommandHelper(workDir)
 def args = []
 if (apicPath) {
     args = [apicPath, "login", "--server", server, "--username", username, "--password", password]
-    if (type != "Default") {
-        args << "--type"
-        args << type
-    }
 }
 else {
     if (isWindows) {
@@ -41,9 +36,6 @@ else {
         args = ["/bin/bash", "-c"]
     }
     def apicCommand = "apic login --server ${server} --username ${username} --password ${password}"
-    if (type != "Default") {
-        apicCommand += " --type ${type}"
-    }
     args << apicCommand
 }
 

@@ -29,4 +29,7 @@
       </migrate-properties>
     </migrate-command>
   </migrate>
+  <migrate to-version="3">
+    <migrate-command name="Login"/>
+  </migrate>
 </plugin-upgrade>

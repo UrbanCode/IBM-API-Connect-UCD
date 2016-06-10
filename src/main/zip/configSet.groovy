@@ -68,21 +68,16 @@ catch (Exception ex) {
 finally {
     // Print system output
     def output = helper.systemOutput
+    println "================================"
+    println "API Connect Output..."
     println output
+    println "================================"
 
-    // Iterate through the possible outputs
-    if (output.contains("ERROR Use 'apic login' to log into")){
-        println "[Possible Solution] Begin the process with the 'Login' step."
-        System.exit(1)
-    }
-    else if (output.contains("is not a valid configuration variable")){
+    // Regex is determine if the output contains the word "Error" - case insensitive.
+    if (output.matches(".*(?i)Error(.|\\n)*")){
         println "[Error] Unable to run the 'apic config:set' command because of an invalid property."
-        println "[Possible Solution] Confirm the server, organization, name, and type properties are valid."
-        System.exit(1)
-    }
-    else if (output.contains("ERROR")){
-        println "[Error] Unable to run the 'apic config:set' command."
-        println "[Possible Solution] Confirm the server, organization, name, and type properties are valid."
+        println "[Possible Solution] Begin the process with the 'Login' step."
+        println "[Possible Solution] Confirm the server, organization, and app properties are valid."
         System.exit(1)
     }
     else {

@@ -61,20 +61,15 @@ catch (Exception ex) {
 finally {
     // Print system output
     def output = helper.systemOutput
+    println "================================"
+    println "API Connect Output..."
     println output
+    println "================================"
 
-    // Iterate through the possible outputs
-    if (output.contains("ERROR Use 'apic login --type app' to log into")){
+    // Regex is determine if the output contains the word "Error" - case insensitive.
+    if (output.matches(".*(?i)Error(.|\\n)*")){
+        println "[Error] Unable to run the 'apic apps:publish' command."
         println "[Possible Solution] Begin the process with the 'Login' step."
-        System.exit(1)
-    }
-    else if (output.contains("ERROR Unsupported project type in")){
-        println "[Error] Unable to run the 'apic apps:publish' command."
-        println "[Possible Solution] Confirm the app property is valid."
-        System.exit(1)
-    }
-    else if (output.contains("ERROR")){
-        println "[Error] Unable to run the 'apic apps:publish' command."
         println "[Possible Solution] Confirm the server, organization, and app properties are valid."
         System.exit(1)
     }

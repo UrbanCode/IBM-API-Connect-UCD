@@ -135,35 +135,6 @@
         "rootActivity": {
             "edges": [
                 {
-                    "to": "Publish API Product Definitions",
-                    "from": "Set Configuration Variable - Catalog",
-                    "type": "ALWAYS",
-                    "value": ""
-                },
-                {
-                    "to": "Set Configuration Variable - App",
-                    "from": "Login",
-                    "type": "ALWAYS",
-                    "value": ""
-                },
-                {
-                    "to": "Set Configuration Variable - Catalog",
-                    "from": "Set Configuration Variable - App",
-                    "type": "ALWAYS",
-                    "value": ""
-                },
-                {
-                    "to": "Logout",
-                    "from": "Publish API Product Definitions",
-                    "type": "FAILURE",
-                    "value": ""
-                },
-                {
-                    "to": "Login",
-                    "type": "ALWAYS",
-                    "value": ""
-                },
-                {
                     "to": "Publish an Application",
                     "from": "Publish API Product Definitions",
                     "type": "SUCCESS",
@@ -176,6 +147,35 @@
                     "value": ""
                 },
                 {
+                    "to": "Set Configuration Variable - Catalog",
+                    "from": "Set Configuration Variable - App",
+                    "type": "ALWAYS",
+                    "value": ""
+                },
+                {
+                    "to": "Login",
+                    "type": "ALWAYS",
+                    "value": ""
+                },
+                {
+                    "to": "Set Configuration Variable - App",
+                    "from": "Login",
+                    "type": "ALWAYS",
+                    "value": ""
+                },
+                {
+                    "to": "Logout",
+                    "from": "Publish API Product Definitions",
+                    "type": "FAILURE",
+                    "value": ""
+                },
+                {
+                    "to": "Publish API Product Definitions",
+                    "from": "Set Configuration Variable - Catalog",
+                    "type": "ALWAYS",
+                    "value": ""
+                },
+                {
                     "to": "c5fb90dda0c133abf0ee910cfe9415",
                     "from": "Logout",
                     "type": "SUCCESS",
@@ -183,6 +183,34 @@
                 }
             ],
             "offsets": [
+                {
+                    "name": "Login",
+                    "x": -30,
+                    "y": 97,
+                    "h": 60,
+                    "w": 140
+                },
+                {
+                    "name": "Publish an Application",
+                    "x": 128.5,
+                    "y": 536,
+                    "h": 60,
+                    "w": 230
+                },
+                {
+                    "name": "c5fb90dda0c133abf0ee910cfe9415",
+                    "x": -5,
+                    "y": 790,
+                    "h": 50,
+                    "w": 90
+                },
+                {
+                    "name": "Publish API Product Definitions",
+                    "x": -100,
+                    "y": 430,
+                    "h": 60,
+                    "w": 280
+                },
                 {
                     "name": "Set Configuration Variable - Catalog",
                     "x": -95,
@@ -198,43 +226,15 @@
                     "w": 250
                 },
                 {
-                    "name": "Publish API Product Definitions",
-                    "x": -100,
-                    "y": 430,
-                    "h": 60,
-                    "w": 280
-                },
-                {
-                    "name": "Login",
-                    "x": -30,
-                    "y": 97,
-                    "h": 60,
-                    "w": 140
-                },
-                {
                     "name": "Logout",
                     "x": -35,
                     "y": 660,
                     "h": 60,
                     "w": 150
-                },
-                {
-                    "name": "Publish an Application",
-                    "x": 128.5,
-                    "y": 536,
-                    "h": 60,
-                    "w": 230
-                },
-                {
-                    "name": "c5fb90dda0c133abf0ee910cfe9415",
-                    "x": -5,
-                    "y": 790,
-                    "h": 50,
-                    "w": 90
                 }
             ],
             "type": "graph",
-            "name": "fd1720e7-ba23-4b38-be8f-efcf85c3b0ca",
+            "name": "7670f841-3936-4655-a42f-81042be23d31",
             "children": [
                 {
                     "type": "finish",
@@ -248,12 +248,11 @@
                     "impersonationUseSudo": false,
                     "commandName": "Login",
                     "pluginName": "IBM API Connect",
-                    "pluginVersion": 2,
+                    "pluginVersion": 3,
                     "properties": {
                         "server": "${p:component\/apic.server}",
                         "username": "${p:apic.username}",
                         "password": "${p:apic.password}",
-                        "type": "app",
                         "apicPath": "${p?:component\/apic.path}"
                     },
                     "type": "plugin",
@@ -267,7 +266,7 @@
                     "impersonationUseSudo": false,
                     "commandName": "Logout",
                     "pluginName": "IBM API Connect",
-                    "pluginVersion": 2,
+                    "pluginVersion": 3,
                     "properties": {
                         "server": "${p:component\/apic.server}",
                         "apicPath": "${p?:component\/apic.path}"
@@ -283,7 +282,7 @@
                     "impersonationUseSudo": false,
                     "commandName": "Set Configuration Variable",
                     "pluginName": "IBM API Connect",
-                    "pluginVersion": 2,
+                    "pluginVersion": 3,
                     "properties": {
                         "server": "${p:component\/apic.server}",
                         "organization": "${p:component\/apic.organization}",
@@ -304,7 +303,7 @@
                     "impersonationUseSudo": false,
                     "commandName": "Set Configuration Variable",
                     "pluginName": "IBM API Connect",
-                    "pluginVersion": 2,
+                    "pluginVersion": 3,
                     "properties": {
                         "server": "${p:component\/apic.server}",
                         "organization": "${p:component\/apic.organization}",
@@ -325,7 +324,7 @@
                     "impersonationUseSudo": false,
                     "commandName": "Publish API Product Definitions",
                     "pluginName": "IBM API Connect",
-                    "pluginVersion": 2,
+                    "pluginVersion": 3,
                     "properties": {
                         "server": "${p:component\/apic.server}",
                         "organization": "${p:component\/apic.organization}",
@@ -345,7 +344,7 @@
                     "impersonationUseSudo": false,
                     "commandName": "Publish an Application",
                     "pluginName": "IBM API Connect",
-                    "pluginVersion": 2,
+                    "pluginVersion": 3,
                     "properties": {
                         "server": "${p:component\/apic.server}",
                         "organization": "${p:component\/apic.organization}",

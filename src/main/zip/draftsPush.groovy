@@ -74,23 +74,17 @@ catch (Exception ex) {
 finally {
     // Print system output
     def output = helper.systemOutput
+    println "================================"
+    println "API Connect Output..."
     println output
+    println "================================"
 
-    // Iterate through the possible outputs
-    if (output.contains("ERROR Use 'apic login' to log into")){
-        println "[Possible Solution] Begin the process with the 'Login' step."
-        System.exit(1)
-    }
-    else if (output.contains("${definition} does not exist.")){
-        println "[Error] Unable to run the 'apic drafts:push' command because the ${definition} file could not be found."
-        println "[Possible Solution] Confirm the definition  file is a valid property."
-        println "[Possible Solution] If you properties contain spaces, surround the properties with quotes. "
-        System.exit(1)
-    }
-    else if (output.contains("ERROR")){
+    // Regex is determine if the output contains the word "Error" - case insensitive.
+    if (output.matches(".*(?i)Error(.|\\n)*")){
         println "[Error] Unable to run the 'apic drafts:push' command."
+        println "[Possible Solution] Begin the process with the 'Login' step."
         println "[Possible Solution] Confirm the server, organization, and definition properties are valid."
-        println "[Possible Solution] If you properties contain spaces, surround the properties with quotes. "
+        println "[Possible Solution] If you properties contain spaces, surround the properties with quotes."
         System.exit(1)
     }
     else {

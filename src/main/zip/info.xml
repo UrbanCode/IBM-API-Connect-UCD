@@ -36,6 +36,10 @@
     <release-note plugin-version="2">
       Renamed Steps, API Product Definition, and templates for easier comprehension.
     </release-note>
+    <release-note plugin-version="3">
+      Removed the 'type' property from 'Login' step.
+      Error handling now properly catches errors.
+    </release-note>
 
   </release-notes>
 </pluginInfo>
