@@ -41,5 +41,8 @@
       Error handling now properly catches errors.
     </release-note>
 
+    <release-note plugin-version="4">
+Support property file encryption.
+    </release-note>
   </release-notes>
 </pluginInfo>
