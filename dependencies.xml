@@ -171,7 +171,7 @@
       <cs-project name="Jakarta Commons Codec"/>
       <criteria status="success"/>
       <delivery artifact-set="Default">
-        <directory>lib/test</directory>
+        <directory>lib</directory>
       </delivery>
     </dependency>
 
@@ -190,5 +190,21 @@
         </delivery>
     </dependency>
 
+
+    <dependency>
+      <cs-project name="Jettison" />
+      <criteria status="success" />
+      <delivery artifact-set="Library">
+        <directory>lib</directory>
+      </delivery>
+    </dependency>
+
+    <dependency>
+      <ah-project name='securedata' workflow='build workflow [master]' />
+      <criteria status='success' />
+      <delivery artifact-set='Dist'>
+        <directory>lib</directory>
+      </delivery>
+    </dependency>
   </dependencies>
 </project>
