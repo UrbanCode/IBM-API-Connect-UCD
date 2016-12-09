@@ -32,4 +32,6 @@
   <migrate to-version="3">
     <migrate-command name="Login"/>
   </migrate>
+  <migrate to-version="4">
+  </migrate>
 </plugin-upgrade>
