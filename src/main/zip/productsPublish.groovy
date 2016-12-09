@@ -29,7 +29,7 @@ def ch = new CommandHelper(workDir)
 
 def args = []
 if (apicPath) {
-    args = [apicPath, "publish", definition, "--server", server, "--organization", organization, "--catalog", catalog]
+    args = [apicPath, "products:publish", definition, "--server", server, "--organization", organization, "--catalog", catalog]
     if (stage) {
         args << "--stage"
     }
@@ -41,7 +41,7 @@ else {
     else {
         args = ["/bin/bash", "-c"]
     }
-    def apicCommand = "apic publish ${definition} --server ${server} --organization ${organization} --catalog ${catalog}"
+    def apicCommand = "apic products:publish ${definition} --server ${server} --organization ${organization} --catalog ${catalog}"
     if (stage) {
         apicCommand += " --stage"
     }
