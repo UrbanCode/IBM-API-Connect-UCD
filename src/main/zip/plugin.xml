@@ -17,7 +17,7 @@
     <tag>IBM API Management/IBM API Connect</tag>
   </header>
   <step-type name="Login">
-    <description>Authenticate with an API Connect cloud through the management server. This step is a prerequisite for all other steps in the IBM API Connect plug-in.</description>
+    <description>Authenticate with an API Connect cloud through the management server. This step is a prerequisite for all other steps in the IBM API Connect plug-in. (apic login)</description>
     <properties>
       <property name="server" required="true">
         <property-ui type="textBox"
@@ -62,7 +62,7 @@
     </command>
   </step-type>
   <step-type name="Logout">
-    <description>Remove local authentication credentials for an API Connect cloud. Run this step at the end of each deployment process.</description>
+    <description>Remove local authentication credentials for an API Connect cloud. Run this step at the end of each deployment process. (apic logout)</description>
     <properties>
       <property name="server" required="true">
         <property-ui type="textBox"
@@ -95,7 +95,7 @@
     </command>
   </step-type>
   <step-type name="Push API Product Definitions to Drafts">
-    <description>Push API product definitions to drafts on an API Connect cloud.</description>
+    <description>Push API product definitions to drafts on an API Connect cloud. (apic drafts:push)</description>
     <properties>
       <property name="server" required="true">
         <property-ui type="textBox"
@@ -152,7 +152,7 @@
     </command>
   </step-type>
   <step-type name="Publish API Product Definitions">
-    <description>Publish API product and referenced APIs to a catalog.</description>
+    <description>Publish API product and referenced APIs to a catalog. (apic products:publish)</description>
     <properties>
       <property name="server" required="true">
         <property-ui type="textBox"
@@ -203,13 +203,13 @@
     <command program="${GROOVY_HOME}/bin/groovy">
       <arg value="-cp"/>
       <arg path="classes:lib/securedata.jar:lib/jettison-1.1.jar:lib/commons-codec.jar:lib/CommonsUtil.jar"/>
-      <arg file="publish.groovy"/>
+      <arg file="productsPublish.groovy"/>
       <arg file="${PLUGIN_INPUT_PROPS}"/>
       <arg file="${PLUGIN_OUTPUT_PROPS}"/>
     </command>
   </step-type>
   <step-type name="Publish an Application">
-    <description>Publish a Node.js (LoopBack) application to a provider application.</description>
+    <description>Publish a Node.js (LoopBack) application to a provider application. (apic apps:publish)</description>
     <properties>
       <property name="server" required="true">
         <property-ui type="textBox"
@@ -261,7 +261,7 @@
   </step-type>
   <step-type name="Set Configuration Variable">
     <description>Set a configuration variable. You do not need to run the Login step before running this step. This is a wrapper step for the App and Catalog Identifier.
-    If you have access to the Identifier, run that command through the Shell step.</description>
+    If you have access to the Identifier, run that command through the Shell step. (apic config:set)</description>
     <properties>
       <property name="server" required="true">
         <property-ui type="textBox"
@@ -321,6 +321,69 @@
       <arg value="-cp"/>
       <arg path="classes:lib/securedata.jar:lib/jettison-1.1.jar:lib/commons-codec.jar:lib/CommonsUtil.jar"/>
       <arg file="configSet.groovy"/>
+      <arg file="${PLUGIN_INPUT_PROPS}"/>
+      <arg file="${PLUGIN_OUTPUT_PROPS}"/>
+    </command>
+  </step-type>
+  <step-type name="Replace Product in Catalog">
+    <description>Replace a Product in a Catalog with another Product. (apic products:replace)</description>
+    <properties>
+      <property name="server" required="true">
+        <property-ui type="textBox"
+                     label="Server"
+                     default-value="${p:component/apic.server}"
+                     description="Specify the management server endpoint to set the variable on. For example, the IBM Bluemix endpoint is us.apiconnect.ibmcloud.com."/>
+      </property>
+      <property name="organization" required="true">
+        <property-ui type="textBox"
+                     label="Organization"
+                     default-value="${p:component/apic.organization}"
+                     description="Provider organization name."/>
+      </property>
+      <property name="catalog" required="true">
+        <property-ui type="textBox"
+                     label="Catalog"
+                     default-value="${p:component/apic.catalog}"
+                     description="Catalog name containing the to be replaced product."/>
+      </property>
+      <property name="oldProduct" required="true">
+        <property-ui type="textBox"
+                     label="Old Product"
+                     default-value="${p:component/apic.oldProduct}"
+                     description="The old product that will be replaced. Use the format: OLD_PRODUCT_NAME[:VERSION]"/>
+      </property>
+      <property name="newProduct" required="true">
+        <property-ui type="textBox"
+                     label="New Product"
+                     default-value="${p:component/apic.newProduct}"
+                     description="The new product that will be replacing the old product. Use the format: NEW_PRODUCT_NAME[:VERSION]"/>
+      </property>
+      <property name="plans" required="true">
+        <property-ui type="textBox"
+                     label="Plan Mappings"
+                     default-value="${p:component/apic.planMappings}"
+                     description="The told to new product plan mappings for the replacing products. Use the format: SOURCE_PLAN_NAME:TARGET_PLAN_NAME"/>
+      </property>
+      <property name="apicPath" required="false">
+        <property-ui type="textBox"
+                     hidden="true"
+                     label="APIC Tool Path"
+                     default-value="${p?:component/apic.path}"
+                     description="The full path to the apic command-line tool. For example: C:\Users\John\AppData\Roaming\npm\apic.cmd"/>
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+        if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp"/>
+      <arg path="classes:lib/securedata.jar:lib/jettison-1.1.jar:lib/commons-codec.jar:lib/CommonsUtil.jar"/>
+      <arg file="productsReplace.groovy"/>
       <arg file="${PLUGIN_INPUT_PROPS}"/>
       <arg file="${PLUGIN_OUTPUT_PROPS}"/>
     </command>
