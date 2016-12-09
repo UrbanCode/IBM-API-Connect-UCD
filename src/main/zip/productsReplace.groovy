@@ -10,53 +10,43 @@
 import com.urbancode.air.AirPluginTool
 import com.urbancode.air.CommandHelper
 import com.urbancode.air.plugin.apic.APICHelper
+
+
 def apTool = new AirPluginTool(this.args[0], this.args[1])
 
 def props = apTool.getStepProperties()
 
+def oldProduct   = props['oldProduct']
+def newProduct   = props['newProduct']
+def plans        = props['plans']
+def catalog      = props['catalog']
 def server       = props['server']
 def organization = props['organization']
-def catalog      = props['catalog']
-def definition   = props['definition']
-def stage        = Boolean.valueOf(props['stage'])
 def apicPath     = props['apicPath']
 
-final def isWindows = System.getProperty('os.name').contains("Windows")
+final Boolean isWindows = System.getProperty('os.name').contains("Windows")
 
 APICHelper helper = new APICHelper()
-def workDir = new File(".")
-def ch = new CommandHelper(workDir)
+File workDir = new File(".")
+CommandHelper ch = new CommandHelper(workDir)
 
-def args = []
-if (apicPath) {
-    args = [apicPath, "publish", definition, "--server", server, "--organization", organization, "--catalog", catalog]
-    if (stage) {
-        args << "--stage"
-    }
-}
-else {
-    if (isWindows) {
-        args = ["cmd", "/C"]
-    }
-    else {
-        args = ["/bin/bash", "-c"]
-    }
-    def apicCommand = "apic publish ${definition} --server ${server} --organization ${organization} --catalog ${catalog}"
-    if (stage) {
-        apicCommand += " --stage"
-    }
-    args << apicCommand
-}
+List<String> properties = ["products:replace", oldProduct, newProduct,
+        "--plans", plans,
+        // Bug in APIC. It does not like the full names for catalog, server, and organization
+        "-c", catalog,
+        "-s", server,
+        "-o", organization
+    ]
 
-def exitCode
+List<String> args = helper.constructCommand(apicPath, properties)
+
 try {
-    exitCode = ch.runCommand("[Action] Publishing API or definitions to catalog...", args, helper.getSystemOutput)
+    ch.runCommand("[Action] Replacing '${oldProduct}' with '${newProduct}' in Catalog...", args, helper.getSystemOutput)
 }
 catch (IOException ex) {
     println "[Error] Unable to find the 'apic' command line tool."
     println "[Possible Solution] Confirm the 'apic' command line tool is installed. " +
                 "Installation directions can be found on the API Connect troubleshooting documentation page."
-    println "[Possible Solution] If you properties contain spaces, surround the properties with quotes. "
     ex.printStackTrace()
     System.exit(1)
 }
@@ -74,14 +64,12 @@ finally {
 
     // Regex is determine if the output contains the word "Error" - case insensitive.
     if (output.matches(".*(?i)Error(.|\\n)*")){
-        println "[Error] Unable to run the 'apic publish' command."
+        println "[Error] Unable to run the 'apic product:replace' command."
         println "[Possible Solution] Begin the process with the 'Login' step."
-        println "[Possible Solution] Confirm the definition file is a valid property or it doesn't already exist."
-        println "[Possible Solution] Confirm the server, organization, catalog, and definition properties are valid."
-        println "[Possible Solution] If you properties contain spaces, surround the properties with quotes. "
+        println "[Possible Solution] Confirm the server, organization, and product properties are valid."
         System.exit(1)
     }
     else {
-        println "[OK] Successfully published definition to API Connect cloud's catalog."
+        println "[OK] Successfully replaced the product '${oldProduct}' with ${newProduct} in API Connect."
     }
 }
