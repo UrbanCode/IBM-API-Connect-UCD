@@ -1,7 +1,7 @@
 /*
 * Licensed Materials - Property of IBM Corp.
 * IBM UrbanCode Deploy
-* (c) Copyright IBM Corporation 2016. All Rights Reserved.
+* (c) Copyright IBM Corporation 2016, 2017. All Rights Reserved.
 *
 * U.S. Government Users Restricted Rights - Use, duplication or disclosure restricted by
 * GSA ADP Schedule Contract with IBM Corp.
@@ -19,14 +19,8 @@ def organization = props['organization']
 def type         = props['type']
 def name         = props['name']
 def apicPath     = props['apicPath']
-def local = ""
-def global = ""
-if (Boolean.valueOf(props['local'])) {
-    local = "--local"
-}
-if (Boolean.valueOf(props['global'])) {
-    global = "--global"
-}
+def local = Boolean.valueOf(props['local'])
+def global = Boolean.valueOf(props['global'])
 
 final def isWindows = System.getProperty('os.name').contains("Windows")
 
@@ -36,9 +30,14 @@ def ch = new CommandHelper(workDir)
 
 def args = []
 if (apicPath) {
-    args = [apicPath, "config:set", local, global,
-                "${type}=apic-${type}://${server}/orgs/${organization}/${type}s/${name}"
-           ]
+    args = [apicPath, "config:set"]
+    if (local) {
+        args << "--local"
+    }
+    if (global) {
+        args << "--global"
+    }
+    args << "${type}=apic-${type}://${server}/orgs/${organization}/${type}s/${name}"
 }
 else {
     if (isWindows) {
@@ -47,7 +46,15 @@ else {
     else {
         args = ["/bin/bash", "-c"]
     }
-    args << "apic config:set ${local} ${global} ${type}=apic-${type}://${server}/orgs/${organization}/${type}s/${name}"
+    String commandStr = "apic config:set"
+    if (local) {
+        commandStr += " --local"
+    }
+    if (global) {
+        commandStr += " --global"
+    }
+    commandStr += " ${type}=apic-${type}://${server}/orgs/${organization}/${type}s/${name}"
+    args << commandStr
 }
 
 def exitCode
