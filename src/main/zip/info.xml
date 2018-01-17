@@ -45,5 +45,8 @@
     Added Replace Product in a Catalog step.
     Updated Set Configuration Variable step to not add extra spaces.
     </release-note>
+     <release-note plugin-version="6">
+    Allow space to be specified on publish
+    </release-note>
   </release-notes>
 </pluginInfo>

@@ -18,6 +18,7 @@ def catalog      = props['catalog']
 def definition   = props['definition']
 def stage        = Boolean.valueOf(props['stage'])
 def apicPath     = props['apicPath']
+def space        = props['space']
 
 final def isWindows = System.getProperty('os.name').contains("Windows")
 
@@ -31,6 +32,12 @@ if (apicPath) {
     if (stage) {
         args << "--stage"
     }
+    if(space?.trim() != "") {
+        args << "--scope"
+        args << "space"
+        args << "--space"
+        args << space
+    }
 }
 else {
     if (isWindows) {
@@ -42,6 +49,9 @@ else {
     def apicCommand = "apic products:publish ${definition} --server ${server} --organization ${organization} --catalog ${catalog}"
     if (stage) {
         apicCommand += " --stage"
+    }
+    if(space?.trim() != "") {
+        apicCommand += " --scope space --space ${space}"
     }
     args << apicCommand
 }
