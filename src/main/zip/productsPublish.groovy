@@ -1,5 +1,5 @@
 /**
- * (c) Copyright IBM Corporation 2016, 2017.
+ * (c) Copyright IBM Corporation 2016, 2018.
  * This is licensed under the following license.
  * The Eclipse Public 1.0 License (http://www.eclipse.org/legal/epl-v10.html)
  * U.S. Government Users Restricted Rights:  Use, duplication or disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
@@ -12,13 +12,13 @@ def apTool = new AirPluginTool(this.args[0], this.args[1])
 
 def props = apTool.getStepProperties()
 
-def server       = props['server']
-def organization = props['organization']
-def catalog      = props['catalog']
-def definition   = props['definition']
+def server       = props['server']?.trim()
+def organization = props['organization']?.trim()
+def catalog      = props['catalog']?.trim()
+def definition   = props['definition']?.trim()
 def stage        = Boolean.valueOf(props['stage'])
-def apicPath     = props['apicPath']
-def space        = props['space']
+def apicPath     = props['apicPath']?.trim()
+def space        = props['space']?.trim()
 
 final def isWindows = System.getProperty('os.name').contains("Windows")
 
@@ -32,7 +32,7 @@ if (apicPath) {
     if (stage) {
         args << "--stage"
     }
-    if(space?.trim() != "") {
+    if(space) {
         args << "--scope"
         args << "space"
         args << "--space"
@@ -50,7 +50,7 @@ else {
     if (stage) {
         apicCommand += " --stage"
     }
-    if(space?.trim() != "") {
+    if(space) {
         apicCommand += " --scope space --space ${space}"
     }
     args << apicCommand

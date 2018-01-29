@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    (c) Copyright IBM Corporation 2011, 2017.
+    (c) Copyright IBM Corporation 2011, 2018.
     This is licensed under the following license.
     The Eclipse Public 1.0 License (http://www.eclipse.org/legal/epl-v10.html)
     U.S. Government Users Restricted Rights:  Use, duplication or disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
@@ -33,5 +33,17 @@
   <migrate to-version="4">
   </migrate>
   <migrate to-version="5">
+  </migrate>
+  <migrate to-version="6">
+    <migrate-command name="Publish API Product Definitions">
+      <migrate-properties>
+        <migrate-property name="space" default=""/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command name="Replace Product in Catalog">
+      <migrate-properties>
+        <migrate-property name="space" default=""/>
+      </migrate-properties>
+    </migrate-command>
   </migrate>
 </plugin-upgrade>

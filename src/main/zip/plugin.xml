@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
-    (c) Copyright IBM Corporation 2011, 2017.
+    (c) Copyright IBM Corporation 2011, 2018.
     This is licensed under the following license.
     The Eclipse Public 1.0 License (http://www.eclipse.org/legal/epl-v10.html)
     U.S. Government Users Restricted Rights:  Use, duplication or disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
@@ -12,7 +12,7 @@
     <description>
       This plug-in includes steps to work with IBM API Connect when developing and publishing APIs and LoopBack applications.
     </description>
-    <tag>Devops Test IBM API Management/IBM API Connect</tag>
+    <tag>IBM API Management/IBM API Connect</tag>
   </header>
   <step-type name="Login">
     <description>Authenticate with an API Connect cloud through the management server. This step is a prerequisite for all other steps in the IBM API Connect plug-in. (apic login)</description>

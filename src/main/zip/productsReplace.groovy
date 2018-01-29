@@ -1,5 +1,5 @@
 /**
- * (c) Copyright IBM Corporation 2016, 2017.
+ * (c) Copyright IBM Corporation 2016, 2018.
  * This is licensed under the following license.
  * The Eclipse Public 1.0 License (http://www.eclipse.org/legal/epl-v10.html)
  * U.S. Government Users Restricted Rights:  Use, duplication or disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
@@ -15,14 +15,14 @@ def apTool = new AirPluginTool(this.args[0], this.args[1])
 
 def props = apTool.getStepProperties()
 
-def oldProduct   = props['oldProduct']
-def newProduct   = props['newProduct']
-def plans        = props['plans']
-def catalog      = props['catalog']
-def server       = props['server']
-def organization = props['organization']
-def apicPath     = props['apicPath']
-def space        = props['space']
+def oldProduct   = props['oldProduct']?.trim()
+def newProduct   = props['newProduct']?.trim()
+def plans        = props['plans']?.trim()
+def catalog      = props['catalog']?.trim()
+def server       = props['server']?.trim()
+def organization = props['organization']?.trim()
+def apicPath     = props['apicPath']?.trim()
+def space        = props['space']?.trim()
 
 final Boolean isWindows = System.getProperty('os.name').contains("Windows")
 
@@ -39,7 +39,7 @@ List<String> properties = ["products:replace", oldProduct, newProduct,
         "-o", organization
     ]
 
-if(space?.trim() != "") {
+if(space) {
     properties.push("--scope")
     properties.push("space")
     properties.push("--space")
