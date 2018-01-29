@@ -22,6 +22,7 @@ def catalog      = props['catalog']
 def server       = props['server']
 def organization = props['organization']
 def apicPath     = props['apicPath']
+def space        = props['space']
 
 final Boolean isWindows = System.getProperty('os.name').contains("Windows")
 
@@ -37,6 +38,13 @@ List<String> properties = ["products:replace", oldProduct, newProduct,
         "-s", server,
         "-o", organization
     ]
+
+if(space?.trim() != "") {
+    properties.push("--scope")
+    properties.push("space")
+    properties.push("--space")
+    properties.push(space)
+}
 
 List<String> args = helper.constructCommand(apicPath, properties)
 

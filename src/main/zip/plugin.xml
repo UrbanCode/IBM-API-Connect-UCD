@@ -8,11 +8,11 @@
 
 <plugin xmlns="http://www.urbancode.com/PluginXMLSchema_v1" xmlns:server="http://www.urbancode.com/PluginServerXMLSchema_v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <header>
-    <identifier id="com.urbancode.air.plugin.apiconnect" name="IBM API Connect" version="5"/>
+    <identifier id="com.urbancode.air.plugin.apiconnect" name="IBM API Connect" version="6"/>
     <description>
       This plug-in includes steps to work with IBM API Connect when developing and publishing APIs and LoopBack applications.
     </description>
-    <tag>IBM API Management/IBM API Connect</tag>
+    <tag>Devops Test IBM API Management/IBM API Connect</tag>
   </header>
   <step-type name="Login">
     <description>Authenticate with an API Connect cloud through the management server. This step is a prerequisite for all other steps in the IBM API Connect plug-in. (apic login)</description>
@@ -181,6 +181,11 @@
                      label="Stage Status"
                      default-value="false"
                      description="Select to leave the product in the staged state, instead of moving to the published state."/>
+      </property>
+      <property name="space" required="false">
+        <property-ui type="textBox"
+                     label="Space"
+                     description="Enter a space to deploy to (if applicable for this catalog)"/>
       </property>
       <property name="apicPath" required="false">
         <property-ui type="textBox"
@@ -362,6 +367,11 @@
                      default-value="${p:component/apic.planMappings}"
                      description="The told to new product plan mappings for the replacing products. Use the format: SOURCE_PLAN_NAME:TARGET_PLAN_NAME"/>
       </property>
+       <property name="space" required="false">
+        <property-ui type="textBox"
+                     label="Space"
+                     description="Enter a space to replace in (if applicable for this catalog)"/>
+        </property>
       <property name="apicPath" required="false">
         <property-ui type="textBox"
                      hidden="true"
