@@ -1,95 +1,44 @@
-/**
- * (c) Copyright IBM Corporation 2016, 2018.
- * This is licensed under the following license.
- * The Eclipse Public 1.0 License (http://www.eclipse.org/legal/epl-v10.html)
- * U.S. Government Users Restricted Rights:  Use, duplication or disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+/*
+ * Licensed Materials - Property of IBM Corp.
+ * IBM UrbanCode Deploy
+ * (c) Copyright IBM Corporation 2016. All Rights Reserved.
+ *
+ * U.S. Government Users Restricted Rights - Use, duplication or disclosure restricted by
+ * GSA ADP Schedule Contract with IBM Corp.
  */
 
 import com.urbancode.air.AirPluginTool
 import com.urbancode.air.CommandHelper
+import com.urbancode.air.ExitCodeException
 import com.urbancode.air.plugin.apic.APICHelper
-def apTool = new AirPluginTool(this.args[0], this.args[1])
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
 
-def props = apTool.getStepProperties()
+AirPluginTool apTool = new AirPluginTool(this.args[0], this.args[1])
 
-def server       = props['server']?.trim()
-def organization = props['organization']?.trim()
-def catalog      = props['catalog']?.trim()
-def definition   = props['definition']?.trim()
-def stage        = Boolean.valueOf(props['stage'])
-def apicPath     = props['apicPath']?.trim()
-def space        = props['space']?.trim()
+Properties props = apTool.getStepProperties()
+int exitCode = 0
 
-final def isWindows = System.getProperty('os.name').contains("Windows")
+String logLevel = props['loggerLevel']
+Logger.getRootLogger().setLevel(Level.toLevel(logLevel, Level.INFO))
+Logger logger = Logger.getLogger(getClass())
 
-APICHelper helper = new APICHelper()
-def workDir = new File(".")
-def ch = new CommandHelper(workDir)
+String server = props['server']?.trim()
+String organization = props['organization']?.trim()
+String catalog = props['catalog']?.trim()
+String definition = props['definition']?.trim()
+boolean stage = Boolean.valueOf(props['stage'])
+String space = props['space']?.trim()
+String apicPath = props['apicPath']?.trim()
 
-def args = []
-if (apicPath) {
-    args = [apicPath, "products:publish", definition, "--server", server, "--organization", organization, "--catalog", catalog]
-    if (stage) {
-        args << "--stage"
-    }
-    if(space) {
-        args << "--scope"
-        args << "space"
-        args << "--space"
-        args << space
-    }
-}
-else {
-    if (isWindows) {
-        args = ["cmd", "/C"]
-    }
-    else {
-        args = ["/bin/bash", "-c"]
-    }
-    def apicCommand = "apic products:publish ${definition} --server ${server} --organization ${organization} --catalog ${catalog}"
-    if (stage) {
-        apicCommand += " --stage"
-    }
-    if(space) {
-        apicCommand += " --scope space --space ${space}"
-    }
-    args << apicCommand
-}
-
-def exitCode
+APICHelper helper
 try {
-    exitCode = ch.runCommand("[Action] Publishing API or definitions to catalog...", args, helper.getSystemOutput)
+    helper = APICHelper.createInstance(apicPath, server)
+    helper.publishProduct(organization, catalog, definition, space, stage)
 }
-catch (IOException ex) {
-    println "[Error] Unable to find the 'apic' command line tool."
-    println "[Possible Solution] Confirm the 'apic' command line tool is installed. " +
-                "Installation directions can be found on the API Connect troubleshooting documentation page."
-    println "[Possible Solution] If you properties contain spaces, surround the properties with quotes. "
-    ex.printStackTrace()
-    System.exit(1)
+catch (ExitCodeException ex) {
+    logger.error(ex.getMessage())
+    exitCode = 1
 }
-catch (Exception ex) {
-    // Error caught later
-    ex.printStackTrace()
-}
-finally {
-    // Print system output
-    def output = helper.systemOutput
-    println "================================"
-    println "API Connect Output..."
-    println output
-    println "================================"
 
-    // Regex is determine if the output contains the word "Error" - case insensitive.
-    if (output.matches(".*(?i)Error(.|\\n)*")){
-        println "[Error] Unable to run the 'apic publish' command."
-        println "[Possible Solution] Begin the process with the 'Login' step."
-        println "[Possible Solution] Confirm the definition file is a valid property or it doesn't already exist."
-        println "[Possible Solution] Confirm the server, organization, catalog, and definition properties are valid."
-        println "[Possible Solution] If you properties contain spaces, surround the properties with quotes. "
-        System.exit(1)
-    }
-    else {
-        println "[OK] Successfully published definition to API Connect cloud's catalog."
-    }
-}
+System.exit(exitCode)

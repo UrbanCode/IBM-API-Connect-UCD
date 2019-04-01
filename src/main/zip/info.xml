@@ -48,5 +48,8 @@
      <release-note plugin-version="6">
     Allow space to be specified on the Publish API Product Definitions (products:publish) and Replace Product in Catalog (products:replace) steps.
     </release-note>
+    <release-note plugin-version="7">
+    Updated plugin to support API Connect 2018.
+    </release-note>
   </release-notes>
 </pluginInfo>
