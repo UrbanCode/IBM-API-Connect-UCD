@@ -128,6 +128,45 @@ class APICv2018Helper extends APICHelper {
         }
     }
 
+    @Override
+    public void supersedeProduct(
+        String oldProduct,
+        String newProduct,
+        List<String> plans,
+        String catalog,
+        String organization,
+        String space)
+    {
+        List<String> configArgs = ["--server", server, "--org", organization, "--catalog", catalog]
+
+        if (space) {
+            configArgs.addAll(["--scope", "space", "--space", space])
+        }
+        else {
+            configArgs.addAll("--scope", "catalog")
+        }
+
+        logger.info("Creating PRODUCT_PLAN_MAPPING_FILE for use in the replacement task.")
+        File migrationFile = createMigrationFile(oldProduct, plans, configArgs)
+        logger.info("Successfully created mapping file '${migrationFile.absolutePath}'.")
+
+        List<String> args = ["products:supersede", newProduct, migrationFile.absolutePath]
+        args.addAll(configArgs)
+
+        try {
+            logger.info("Superseding '${oldProduct}' with '${newProduct}' in Catalog.")
+            runCmd(args)
+            logger.info("Successfully replaced the product in API Connect.")
+        }
+        catch (ExitCodeException ex) {
+            logger.error("The 'apic products:replace' command failed. Review the above error for " +
+                "help.")
+            logger.error("[Possible Solution] Attempt to run the above apic command manually on " +
+                "the agent's terminal.")
+            throw ex
+        }
+    }
+
     private File createMigrationFile(String oldProduct, List<String> plans, List<String> configArgs) {
         String oldProductUrl = getProductUrl(oldProduct, configArgs)
 

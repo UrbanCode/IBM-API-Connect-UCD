@@ -165,6 +165,7 @@ public abstract class APICHelper {
         }
     }
 
+    /* Execute command and return output string */
     public String execCmdReturnOutput(List<String> args) {
         ProcessBuilder pb = new ProcessBuilder(args).directory(workDir)
         Process proc = pb.start()
@@ -187,5 +188,7 @@ public abstract class APICHelper {
         String space, boolean stage)
     public abstract void publishApp(File projDir, String app, String organization)
     public abstract void replaceProduct(String oldProduct, String newProduct, List<String> plans,
+        String catalog, String organization, String space)
+    public abstract void supersedeProduct(String oldProduct, String newProduct, List<String> plans,
         String catalog, String organization, String space)
 }

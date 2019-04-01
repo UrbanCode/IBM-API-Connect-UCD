@@ -157,4 +157,33 @@ class APICv5Helper extends APICHelper {
             throw ex
         }
     }
+
+    @Override
+    public void supersedeProduct(
+        String oldProduct,
+        String newProduct,
+        List<String> plans,
+        String catalog,
+        String organization,
+        String space)
+    {
+        List<String> args = ["products:supersede", oldProduct, newProduct,
+            "--plans", plans.join(" "), "-c", catalog, "-s", server, "-o", organization]
+
+        if (space) {
+            args.addAll(["--scope", "space", "--space", space])
+        }
+
+        try {
+            logger.info("Replacing '${oldProduct}' with '${newProduct}' in Catalog.")
+            runCmd(args)
+            logger.info("Successfully superseded the product in API Connect.")
+        }
+        catch (ExitCodeException ex) {
+            logger.error"The products:supersede command failed. Review the above error for help."
+            logger.error("[Possible Solution] Attempt to run the above apic command manually on " +
+                "the agent's terminal.")
+            throw ex
+        }
+    }
 }
