@@ -169,16 +169,12 @@ public abstract class APICHelper {
         ProcessBuilder pb = new ProcessBuilder(args).directory(workDir)
         Process proc = pb.start()
         StringBuffer outputBuffer = new StringBuffer()
-        StringBuffer errorBuffer = new StringBuffer()
 
-        proc.waitForProcessOutput(outputBuffer, errorBuffer)
+        proc.waitForProcessOutput(outputBuffer, outputBuffer)
         String output = outputBuffer.toString()
-        String error = errorBuffer.toString()
 
         if (proc.exitValue()) {
-            logger.error("Error Response: " + error)
-            logger.error("Output Response: " + output)
-            throw new ExitCodeException("Failed to run command '${args}'.")
+            throw new ExitCodeException("Failed to run command '${args}'. Response: ${output}.")
         }
 
         return output

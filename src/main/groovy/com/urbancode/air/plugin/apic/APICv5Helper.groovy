@@ -138,11 +138,8 @@ class APICv5Helper extends APICHelper {
         String organization,
         String space)
     {
-        /* Multiple plan mappings must be separated by spaces */
-        String plansArg = "'${plans.join(" ")}'"
-
         List<String> args = ["products:replace", oldProduct, newProduct,
-            "--plans", plansArg, "-c", catalog, "-s", server, "-o", organization]
+            "--plans", plans.join(" "), "-c", catalog, "-s", server, "-o", organization]
 
         if (space) {
             args.addAll(["--scope", "space", "--space", space])

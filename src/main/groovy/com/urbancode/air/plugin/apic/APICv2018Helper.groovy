@@ -93,7 +93,7 @@ class APICv2018Helper extends APICHelper {
     public void replaceProduct(
         String oldProduct,
         String newProduct,
-        String plans,
+        List<String> plans,
         String catalog,
         String organization,
         String space)
@@ -128,7 +128,7 @@ class APICv2018Helper extends APICHelper {
         }
     }
 
-    private File createMigrationFile(String oldProduct, String plans, List<String> configArgs) {
+    private File createMigrationFile(String oldProduct, List<String> plans, List<String> configArgs) {
         String oldProductUrl = getProductUrl(oldProduct, configArgs)
 
         File migrationFile = File.createTempFile("plans", ".yaml", workDir)
@@ -137,7 +137,7 @@ class APICv2018Helper extends APICHelper {
             writer.write("product_url: ${oldProductUrl}")
             writer.newLine()
             writer.write("plans:")
-            for (String line in plans.tokenize("\\r?\\n")) {
+            for (String line in plans) {
                 List<String> sourceTarget = line.tokenize(":")*.trim()
                 if (sourceTarget.size() > 1) {
                     writer.newLine()
