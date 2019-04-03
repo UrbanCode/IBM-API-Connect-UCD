@@ -146,7 +146,7 @@ class APICv2018Helper extends APICHelper {
             configArgs.addAll("--scope", "catalog")
         }
 
-        logger.info("Creating PRODUCT_PLAN_MAPPING_FILE for use in the replacement task.")
+        logger.info("Creating PRODUCT_PLAN_MAPPING_FILE for use in the replace/supersede task.")
         File migrationFile = createMigrationFile(oldProduct, plans, configArgs)
         logger.info("Successfully created mapping file '${migrationFile.absolutePath}'.")
 
@@ -168,7 +168,7 @@ class APICv2018Helper extends APICHelper {
     }
 
     private File createMigrationFile(String oldProduct, List<String> plans, List<String> configArgs) {
-        String oldProductUrl = getProductUrl(oldProduct, configArgs)
+        String oldProductUrl = getOldProductUrl(oldProduct, configArgs)
 
         File migrationFile = File.createTempFile("plans", ".yaml", workDir)
         migrationFile.deleteOnExit()
@@ -195,22 +195,29 @@ class APICv2018Helper extends APICHelper {
         return migrationFile
     }
 
-    private String getProductUrl(String product, List<String> configArgs) {
-        List<String> productVersionPair = product.tokenize(":")*.trim()
-
-        if (productVersionPair.size() < 2) {
-            throw new ExitCodeException("Invalid product '${product}'. Products must be in the " +
-                "following format 'PRODUCT_NAME:VERSION_NAME'.")
-        }
+    private String getOldProductUrl(String oldProduct, List<String> configArgs) {
+        List<String> productVersionPair = oldProduct.tokenize(":")*.trim()
 
         String productName = productVersionPair.get(0)
-        String version = productVersionPair.get(1)
+        String version = ""
+
+        if (productVersionPair.size() < 2) {
+            logger.info("A specific version wasn't supplied in the product to be " +
+                "replaced/superseded. The earliest published version will be used instead.")
+        }
+        else {
+            version = productVersionPair.get(1)
+        }
 
         List<String> args = ["products:list", productName, "--format", "json"]
         args.addAll(configArgs)
 
         String json = runCmd(args, true)
         ProductParser parser = new ProductParser(json)
+
+        if (parser.isVersionsEmpty()) {
+            throw new ExitCodeException("The product '${oldProduct}' doesn't have any versions.")
+        }
 
         return parser.getVersionProperty(version, "url")
     }

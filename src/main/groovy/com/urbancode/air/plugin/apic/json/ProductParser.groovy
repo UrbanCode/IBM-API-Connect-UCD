@@ -22,15 +22,26 @@ class ProductParser {
         }
     }
 
+    public boolean isVersionsEmpty() {
+        return versions.length() == 0
+    }
+
     public String getVersionProperty(String version, String property) {
-        String value
+        String value = ""
 
-        for (int i = 0; i < versions.length(); i++) {
-            JSONObject currVersion = versions.getJSONObject(i)
+        /* If a specific version isn't supplied, get the first version published */
+        if (!version) {
+            JSONObject firstVersion = versions.getJSONObject(0)
+            value = firstVersion.getString(property)
+        }
+        else {
+            for (int i = 0; i < versions.length(); i++) {
+                JSONObject currVersion = versions.getJSONObject(i)
 
-            if (currVersion.getString("version").equals(version)) {
-                value = currVersion.getString(property)
-                break
+                if (currVersion.getString("version").equals(version)) {
+                    value = currVersion.getString(property)
+                    break
+                }
             }
         }
 

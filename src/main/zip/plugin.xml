@@ -482,7 +482,9 @@ The old product will be retired. The new product must be either staged, publishe
                      label="Old Product"
                      default-value="${p:component/apic.oldProduct}"
                      description="The old product that will be replaced. 
-                        Use the format: OLD_PRODUCT_NAME:VERSION_NAME."/>
+                        Use the format: OLD_PRODUCT_NAME[:VERSION_NAME]. Note that the 
+                        :VERSION_NAME portion is optional. If you don't supply it, the
+                        first published version of the product will be replaced."/>
       </property>
       <property name="newProduct" required="true">
         <property-ui type="textBox"
@@ -575,7 +577,9 @@ The old product will be deprecated. The new product must be either staged, publi
                      label="Old Product"
                      default-value="${p:component/apic.oldProduct}"
                      description="The old product that will be superseded. 
-                        Use the format: OLD_PRODUCT_NAME:VERSION_NAME."/>
+                        Use the format: OLD_PRODUCT_NAME[:VERSION_NAME]. Note that the 
+                        :VERSION_NAME portion is optional. If you don't supply it, the
+                        first published version of the product will be replaced."/>
       </property>
       <property name="newProduct" required="true">
         <property-ui type="textBox"
