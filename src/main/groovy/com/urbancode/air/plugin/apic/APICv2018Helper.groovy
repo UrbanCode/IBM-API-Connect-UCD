@@ -156,7 +156,7 @@ class APICv2018Helper extends APICHelper {
         try {
             logger.info("Superseding '${oldProduct}' with '${newProduct}' in Catalog.")
             runCmd(args)
-            logger.info("Successfully replaced the product in API Connect.")
+            logger.info("Successfully superseded the product in API Connect.")
         }
         catch (ExitCodeException ex) {
             logger.error("The 'apic products:replace' command failed. Review the above error for " +
@@ -171,6 +171,7 @@ class APICv2018Helper extends APICHelper {
         String oldProductUrl = getProductUrl(oldProduct, configArgs)
 
         File migrationFile = File.createTempFile("plans", ".yaml", workDir)
+        migrationFile.deleteOnExit()
 
         migrationFile.withWriter{ writer ->
             writer.write("product_url: ${oldProductUrl}")
