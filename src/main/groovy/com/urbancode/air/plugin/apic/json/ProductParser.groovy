@@ -26,18 +26,21 @@ class ProductParser {
         return versions.length() == 0
     }
 
-    public String getVersionProperty(String version, String property) {
+    public String getVersionProperty(String version, String property, List<String> validStates) {
         String value = ""
 
-        /* If a specific version isn't supplied, get the first version published */
-        if (!version) {
-            JSONObject firstVersion = versions.getJSONObject(0)
-            value = firstVersion.getString(property)
-        }
-        else {
-            for (int i = 0; i < versions.length(); i++) {
-                JSONObject currVersion = versions.getJSONObject(i)
+        for (int i = 0; i < versions.length(); i++) {
+            JSONObject currVersion = versions.getJSONObject(i)
 
+            /* If a version isn't specified return the first one in the correct state */
+            if (!version) {
+                String versionState = currVersion.getString("state").toLowerCase()
+                if (validStates.contains(versionState)) {
+                    value = currVersion.getString(property)
+                    break
+                }
+            }
+            else {
                 if (currVersion.getString("version").equals(version)) {
                     value = currVersion.getString(property)
                     break

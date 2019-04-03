@@ -108,7 +108,8 @@ class APICv2018Helper extends APICHelper {
         }
 
         logger.info("Creating PRODUCT_PLAN_MAPPING_FILE for use in the replacement task.")
-        File migrationFile = createMigrationFile(oldProduct, plans, configArgs)
+        List<String> validStates = ['published', 'deprecated']
+        File migrationFile = createMigrationFile(oldProduct, plans, configArgs, validStates)
         logger.info("Successfully created mapping file '${migrationFile.absolutePath}'.")
 
         List<String> args = ["products:replace", newProduct, migrationFile.absolutePath]
@@ -146,8 +147,9 @@ class APICv2018Helper extends APICHelper {
             configArgs.addAll("--scope", "catalog")
         }
 
-        logger.info("Creating PRODUCT_PLAN_MAPPING_FILE for use in the replace/supersede task.")
-        File migrationFile = createMigrationFile(oldProduct, plans, configArgs)
+        logger.info("Creating PRODUCT_PLAN_MAPPING_FILE for use in the supersede task.")
+        List<String> validStates = ['published']
+        File migrationFile = createMigrationFile(oldProduct, plans, configArgs, validStates)
         logger.info("Successfully created mapping file '${migrationFile.absolutePath}'.")
 
         List<String> args = ["products:supersede", newProduct, migrationFile.absolutePath]
@@ -167,8 +169,13 @@ class APICv2018Helper extends APICHelper {
         }
     }
 
-    private File createMigrationFile(String oldProduct, List<String> plans, List<String> configArgs) {
-        String oldProductUrl = getOldProductUrl(oldProduct, configArgs)
+    private File createMigrationFile(
+        String oldProduct,
+        List<String> plans,
+        List<String> configArgs,
+        List<String> validStates)
+    {
+        String oldProductUrl = getOldProductUrl(oldProduct, configArgs, validStates)
 
         File migrationFile = File.createTempFile("plans", ".yaml", workDir)
         migrationFile.deleteOnExit()
@@ -195,7 +202,11 @@ class APICv2018Helper extends APICHelper {
         return migrationFile
     }
 
-    private String getOldProductUrl(String oldProduct, List<String> configArgs) {
+    private String getOldProductUrl(
+        String oldProduct,
+        List<String> configArgs,
+        List<String> validStates)
+    {
         List<String> productVersionPair = oldProduct.tokenize(":")*.trim()
 
         String productName = productVersionPair.get(0)
@@ -216,9 +227,10 @@ class APICv2018Helper extends APICHelper {
         ProductParser parser = new ProductParser(json)
 
         if (parser.isVersionsEmpty()) {
-            throw new ExitCodeException("The product '${oldProduct}' doesn't have any versions.")
+            throw new ExitCodeException("The product '${oldProduct}' doesn't have any versions, " +
+                "or the versions are not in any of the following states: ${validStates}.")
         }
 
-        return parser.getVersionProperty(version, "url")
+        return parser.getVersionProperty(version, "url", validStates)
     }
 }

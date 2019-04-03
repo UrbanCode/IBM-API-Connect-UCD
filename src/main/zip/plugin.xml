@@ -549,7 +549,7 @@ The old product will be retired. The new product must be either staged, publishe
   </step-type>
   <step-type name="Supersede Product in Catalog">
     <description>
-Supersede a product in a catalog with another product (apic products:replace).
+Supersede a published product in a catalog with another product (apic products:replace).
 The old product will be deprecated. The new product must be either staged, published, or deprecated.
     </description>
     <properties>
