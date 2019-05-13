@@ -46,4 +46,43 @@
       </migrate-properties>
     </migrate-command>
   </migrate>
+  <migrate to-version="7">
+    <migrate-command name="Login">
+      <migrate-properties>
+        <migrate-property name="loggerLevel" default="INFO"/>
+        <migrate-property name="realm" default="${p?:apic.realm}"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command name="Logout">
+      <migrate-properties>
+          <migrate-property name="loggerLevel" default="INFO"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command name="Push API Product Definitions to Drafts (API Connect v5.x)" old="Push API Product Definitions to Drafts">
+      <migrate-properties>
+          <migrate-property name="loggerLevel" default="INFO"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command name="Publish API Product Definitions">
+      <migrate-properties>
+          <migrate-property name="loggerLevel" default="INFO"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command name="Publish an Application (API Connect v5.x)" old="Publish an Application">
+      <migrate-properties>
+          <migrate-property name="loggerLevel" default="INFO"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command name="Set Configuration Variable">
+      <migrate-properties>
+          <migrate-property name="loggerLevel" default="INFO"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command name="Replace Product in Catalog">
+      <migrate-properties>
+          <migrate-property name="loggerLevel" default="INFO"/>
+          <migrate-property name="plans" default="${p:component/apic.planMappings}"/>
+      </migrate-properties>
+    </migrate-command>
+  </migrate>
 </plugin-upgrade>

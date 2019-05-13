@@ -8,14 +8,17 @@
 
 <plugin xmlns="http://www.urbancode.com/PluginXMLSchema_v1" xmlns:server="http://www.urbancode.com/PluginServerXMLSchema_v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <header>
-    <identifier id="com.urbancode.air.plugin.apiconnect" name="IBM API Connect" version="6"/>
+    <identifier id="com.urbancode.air.plugin.apiconnect" name="IBM API Connect" version="7"/>
     <description>
       This plug-in includes steps to work with IBM API Connect when developing and publishing APIs and LoopBack applications.
     </description>
     <tag>IBM API Management/IBM API Connect</tag>
   </header>
   <step-type name="Login">
-    <description>Authenticate with an API Connect cloud through the management server. This step is a prerequisite for all other steps in the IBM API Connect plug-in. (apic login)</description>
+    <description>
+Authenticate with an API Connect cloud through the management server. 
+This step is a prerequisite for all other steps in the IBM API Connect plug-in. (apic login)
+    </description>
     <properties>
       <property name="server" required="true">
         <property-ui type="textBox"
@@ -35,12 +38,37 @@
                      default-value="${p:apic.password}"
                      description="Password to use to authenticate with the API Connect management server."/>
       </property>
+      <property name="realm" required="false">
+        <property-ui type="textBox"
+                     label="Realm"
+                     default-value="${p?:apic.realm}"
+                     description="The identity provider used to authenticate and the scope of the tasks 
+                        that can be performed (I.E. provider/default-idp-2). This field is required 
+                        if using the API Connect v2018 toolkit."/>
+      </property>
       <property name="apicPath" required="false">
         <property-ui type="textBox"
-                     hidden="true"
                      label="APIC Tool Path"
                      default-value="${p?:component/apic.path}"
                      description="The full path to the apic command-line tool. For example: C:\Users\John\AppData\Roaming\npm\apic.cmd"/>
+      </property>
+      <property name="loggerLevel">
+        <property-ui type="selectBox"
+                     hidden="true"
+                     label="Log4j Logging Level"
+                     default-value="INFO"
+                     description="Configure the level of Log4j messages to output to the console.
+                        Selecting 'PARAMETER' will try resolve the log4jLevel property in any
+                        UCD scope, and default to 'INFO' if log4jLevel is invalid or nonexistent."/>
+        <value label="PARAMETER">${p?:log4jLevel}</value>
+        <value label="ALL">ALL</value>
+        <value label="TRACE">TRACE</value>
+        <value label="DEBUG">DEBUG</value>
+        <value label="INFO">INFO</value>
+        <value label="WARN">WARN</value>
+        <value label="ERROR">ERROR</value>
+        <value label="FATAL">FATAL</value>
+        <value label="OFF">OFF</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -53,14 +81,17 @@
      ]]></post-processing>
     <command program="${GROOVY_HOME}/bin/groovy">
       <arg value="-cp"/>
-      <arg path="classes:lib/securedata.jar:lib/jettison-1.1.jar:lib/commons-codec.jar:lib/CommonsUtil.jar"/>
+      <arg path="classes:lib/securedata.jar:lib/jettison-1.1.jar:lib/commons-codec.jar:lib/CommonsUtil.jar:lib/log4j.jar:lib/log4j.jar"/>
       <arg file="login.groovy"/>
       <arg file="${PLUGIN_INPUT_PROPS}"/>
       <arg file="${PLUGIN_OUTPUT_PROPS}"/>
     </command>
   </step-type>
   <step-type name="Logout">
-    <description>Remove local authentication credentials for an API Connect cloud. Run this step at the end of each deployment process. (apic logout)</description>
+    <description>
+Remove local authentication credentials for an API Connect cloud. 
+Run this step at the end of each deployment process. (apic logout)
+    </description>
     <properties>
       <property name="server" required="true">
         <property-ui type="textBox"
@@ -70,10 +101,27 @@
       </property>
       <property name="apicPath" required="false">
         <property-ui type="textBox"
-                     hidden="true"
                      label="APIC Tool Path"
                      default-value="${p?:component/apic.path}"
                      description="The full path to the apic command-line tool. For example: C:\Users\John\AppData\Roaming\npm\apic.cmd"/>
+      </property>
+      <property name="loggerLevel">
+        <property-ui type="selectBox"
+                     hidden="true"
+                     label="Log4j Logging Level"
+                     default-value="INFO"
+                     description="Configure the level of Log4j messages to output to the console.
+                        Selecting 'PARAMETER' will try resolve the log4jLevel property in any
+                        UCD scope, and default to 'INFO' if log4jLevel is invalid or nonexistent."/>
+        <value label="PARAMETER">${p?:log4jLevel}</value>
+        <value label="ALL">ALL</value>
+        <value label="TRACE">TRACE</value>
+        <value label="DEBUG">DEBUG</value>
+        <value label="INFO">INFO</value>
+        <value label="WARN">WARN</value>
+        <value label="ERROR">ERROR</value>
+        <value label="FATAL">FATAL</value>
+        <value label="OFF">OFF</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -86,14 +134,17 @@
      ]]></post-processing>
     <command program="${GROOVY_HOME}/bin/groovy">
       <arg value="-cp"/>
-      <arg path="classes:lib/securedata.jar:lib/jettison-1.1.jar:lib/commons-codec.jar:lib/CommonsUtil.jar"/>
+      <arg path="classes:lib/securedata.jar:lib/jettison-1.1.jar:lib/commons-codec.jar:lib/CommonsUtil.jar:lib/log4j.jar"/>
       <arg file="logout.groovy"/>
       <arg file="${PLUGIN_INPUT_PROPS}"/>
       <arg file="${PLUGIN_OUTPUT_PROPS}"/>
     </command>
   </step-type>
-  <step-type name="Push API Product Definitions to Drafts">
-    <description>Push API product definitions to drafts on an API Connect cloud. (apic drafts:push)</description>
+  <step-type name="Push API Product Definitions to Drafts (API Connect v5.x)">
+    <description>
+Push API product definitions to drafts on an API Connect cloud (apic drafts:push).
+WARNING: This command is no longer supported with API Connect v2018.x.
+    </description>
     <properties>
       <property name="server" required="true">
         <property-ui type="textBox"
@@ -127,10 +178,27 @@
       </property>
       <property name="apicPath" required="false">
         <property-ui type="textBox"
-                     hidden="true"
                      label="APIC Tool Path"
                      default-value="${p?:component/apic.path}"
                      description="The full path to the apic command-line tool. For example: C:\Users\John\AppData\Roaming\npm\apic.cmd"/>
+      </property>
+      <property name="loggerLevel">
+        <property-ui type="selectBox"
+                     hidden="true"
+                     label="Log4j Logging Level"
+                     default-value="INFO"
+                     description="Configure the level of Log4j messages to output to the console.
+                        Selecting 'PARAMETER' will try resolve the log4jLevel property in any
+                        UCD scope, and default to 'INFO' if log4jLevel is invalid or nonexistent."/>
+        <value label="PARAMETER">${p?:log4jLevel}</value>
+        <value label="ALL">ALL</value>
+        <value label="TRACE">TRACE</value>
+        <value label="DEBUG">DEBUG</value>
+        <value label="INFO">INFO</value>
+        <value label="WARN">WARN</value>
+        <value label="ERROR">ERROR</value>
+        <value label="FATAL">FATAL</value>
+        <value label="OFF">OFF</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -143,7 +211,7 @@
      ]]></post-processing>
     <command program="${GROOVY_HOME}/bin/groovy">
       <arg value="-cp"/>
-      <arg path="classes:lib/securedata.jar:lib/jettison-1.1.jar:lib/commons-codec.jar:lib/CommonsUtil.jar"/>
+      <arg path="classes:lib/securedata.jar:lib/jettison-1.1.jar:lib/commons-codec.jar:lib/CommonsUtil.jar:lib/log4j.jar"/>
       <arg file="draftsPush.groovy"/>
       <arg file="${PLUGIN_INPUT_PROPS}"/>
       <arg file="${PLUGIN_OUTPUT_PROPS}"/>
@@ -189,10 +257,27 @@
       </property>
       <property name="apicPath" required="false">
         <property-ui type="textBox"
-                     hidden="true"
                      label="APIC Tool Path"
                      default-value="${p?:component/apic.path}"
                      description="The full path to the apic command-line tool. For example: C:\Users\John\AppData\Roaming\npm\apic.cmd"/>
+      </property>
+      <property name="loggerLevel">
+        <property-ui type="selectBox"
+                     hidden="true"
+                     label="Log4j Logging Level"
+                     default-value="INFO"
+                     description="Configure the level of Log4j messages to output to the console.
+                        Selecting 'PARAMETER' will try resolve the log4jLevel property in any
+                        UCD scope, and default to 'INFO' if log4jLevel is invalid or nonexistent."/>
+        <value label="PARAMETER">${p?:log4jLevel}</value>
+        <value label="ALL">ALL</value>
+        <value label="TRACE">TRACE</value>
+        <value label="DEBUG">DEBUG</value>
+        <value label="INFO">INFO</value>
+        <value label="WARN">WARN</value>
+        <value label="ERROR">ERROR</value>
+        <value label="FATAL">FATAL</value>
+        <value label="OFF">OFF</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -205,14 +290,17 @@
      ]]></post-processing>
     <command program="${GROOVY_HOME}/bin/groovy">
       <arg value="-cp"/>
-      <arg path="classes:lib/securedata.jar:lib/jettison-1.1.jar:lib/commons-codec.jar:lib/CommonsUtil.jar"/>
+      <arg path="classes:lib/securedata.jar:lib/jettison-1.1.jar:lib/commons-codec.jar:lib/CommonsUtil.jar:lib/log4j.jar"/>
       <arg file="productsPublish.groovy"/>
       <arg file="${PLUGIN_INPUT_PROPS}"/>
       <arg file="${PLUGIN_OUTPUT_PROPS}"/>
     </command>
   </step-type>
-  <step-type name="Publish an Application">
-    <description>Publish a Node.js (LoopBack) application to a provider application. (apic apps:publish)</description>
+  <step-type name="Publish an Application (API Connect v5.x)">
+    <description>
+Publish a Node.js (LoopBack) application to a provider application (apic apps:publish).
+WARNING: This command is no longer supported with API Connect v2018.x.
+    </description>
     <properties>
       <property name="server" required="true">
         <property-ui type="textBox"
@@ -240,10 +328,27 @@
       </property>
       <property name="apicPath" required="false">
         <property-ui type="textBox"
-                     hidden="true"
                      label="APIC Tool Path"
                      default-value="${p?:component/apic.path}"
                      description="The full path to the apic command-line tool. For example: C:\Users\John\AppData\Roaming\npm\apic.cmd"/>
+      </property>
+      <property name="loggerLevel">
+        <property-ui type="selectBox"
+                     hidden="true"
+                     label="Log4j Logging Level"
+                     default-value="INFO"
+                     description="Configure the level of Log4j messages to output to the console.
+                        Selecting 'PARAMETER' will try resolve the log4jLevel property in any
+                        UCD scope, and default to 'INFO' if log4jLevel is invalid or nonexistent."/>
+        <value label="PARAMETER">${p?:log4jLevel}</value>
+        <value label="ALL">ALL</value>
+        <value label="TRACE">TRACE</value>
+        <value label="DEBUG">DEBUG</value>
+        <value label="INFO">INFO</value>
+        <value label="WARN">WARN</value>
+        <value label="ERROR">ERROR</value>
+        <value label="FATAL">FATAL</value>
+        <value label="OFF">OFF</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -256,15 +361,18 @@
      ]]></post-processing>
     <command program="${GROOVY_HOME}/bin/groovy">
       <arg value="-cp"/>
-      <arg path="classes:lib/securedata.jar:lib/jettison-1.1.jar:lib/commons-codec.jar:lib/CommonsUtil.jar"/>
+      <arg path="classes:lib/securedata.jar:lib/jettison-1.1.jar:lib/commons-codec.jar:lib/CommonsUtil.jar:lib/log4j.jar"/>
       <arg file="appsPublish.groovy"/>
       <arg file="${PLUGIN_INPUT_PROPS}"/>
       <arg file="${PLUGIN_OUTPUT_PROPS}"/>
     </command>
   </step-type>
   <step-type name="Set Configuration Variable">
-    <description>Set a configuration variable. You do not need to run the Login step before running this step. This is a wrapper step for the App and Catalog Identifier.
-    If you have access to the Identifier, run that command through the Shell step. (apic config:set)</description>
+    <description>
+Set a configuration variable. You do not need to run the Login step before running this step. 
+This is a wrapper step for the App and Catalog Identifier.
+If you have access to the Identifier, run that command through the Shell step. (apic config:set)
+    </description>
     <properties>
       <property name="server" required="true">
         <property-ui type="textBox"
@@ -306,10 +414,27 @@
       </property>
       <property name="apicPath" required="false">
         <property-ui type="textBox"
-                     hidden="true"
                      label="APIC Tool Path"
                      default-value="${p?:component/apic.path}"
                      description="The full path to the apic command-line tool. For example: C:\Users\John\AppData\Roaming\npm\apic.cmd"/>
+      </property>
+      <property name="loggerLevel">
+        <property-ui type="selectBox"
+                     hidden="true"
+                     label="Log4j Logging Level"
+                     default-value="INFO"
+                     description="Configure the level of Log4j messages to output to the console.
+                        Selecting 'PARAMETER' will try resolve the log4jLevel property in any
+                        UCD scope, and default to 'INFO' if log4jLevel is invalid or nonexistent."/>
+        <value label="PARAMETER">${p?:log4jLevel}</value>
+        <value label="ALL">ALL</value>
+        <value label="TRACE">TRACE</value>
+        <value label="DEBUG">DEBUG</value>
+        <value label="INFO">INFO</value>
+        <value label="WARN">WARN</value>
+        <value label="ERROR">ERROR</value>
+        <value label="FATAL">FATAL</value>
+        <value label="OFF">OFF</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -322,14 +447,17 @@
      ]]></post-processing>
     <command program="${GROOVY_HOME}/bin/groovy">
       <arg value="-cp"/>
-      <arg path="classes:lib/securedata.jar:lib/jettison-1.1.jar:lib/commons-codec.jar:lib/CommonsUtil.jar"/>
+      <arg path="classes:lib/securedata.jar:lib/jettison-1.1.jar:lib/commons-codec.jar:lib/CommonsUtil.jar:lib/log4j.jar"/>
       <arg file="configSet.groovy"/>
       <arg file="${PLUGIN_INPUT_PROPS}"/>
       <arg file="${PLUGIN_OUTPUT_PROPS}"/>
     </command>
   </step-type>
   <step-type name="Replace Product in Catalog">
-    <description>Replace a Product in a Catalog with another Product. (apic products:replace)</description>
+    <description>
+Replace a published or deprecated product in a catalog with another product (apic products:replace)
+The old product will be retired. The new product must be either staged, published, or deprecated.
+    </description>
     <properties>
       <property name="server" required="true">
         <property-ui type="textBox"
@@ -347,37 +475,60 @@
         <property-ui type="textBox"
                      label="Catalog"
                      default-value="${p:component/apic.catalog}"
-                     description="Catalog name containing the to be replaced product."/>
+                     description="Catalog name containing the product to be replaced."/>
       </property>
       <property name="oldProduct" required="true">
         <property-ui type="textBox"
                      label="Old Product"
                      default-value="${p:component/apic.oldProduct}"
-                     description="The old product that will be replaced. Use the format: OLD_PRODUCT_NAME[:VERSION]"/>
+                     description="The old product that will be replaced. 
+                        Use the format: OLD_PRODUCT_NAME[:VERSION_NAME]. Note that the 
+                        :VERSION_NAME portion is optional. If you don't supply it, the
+                        first published version of the product will be replaced."/>
       </property>
       <property name="newProduct" required="true">
         <property-ui type="textBox"
                      label="New Product"
                      default-value="${p:component/apic.newProduct}"
-                     description="The new product that will be replacing the old product. Use the format: NEW_PRODUCT_NAME[:VERSION]"/>
+                     description="The new product that will be replacing the old product. 
+                        Use the format: NEW_PRODUCT_NAME:VERSION_NAME."/>
       </property>
       <property name="plans" required="true">
-        <property-ui type="textBox"
+        <property-ui type="textAreaBox"
                      label="Plan Mappings"
                      default-value="${p:component/apic.planMappings}"
-                     description="The told to new product plan mappings for the replacing products. Use the format: SOURCE_PLAN_NAME:TARGET_PLAN_NAME"/>
+                     description="A newline separated list of old to new product plan mappings 
+                        for the product replacement. Note that you must map all product plans.
+                        Use the format: SOURCE_PLAN_NAME:TARGET_PLAN_NAME"/>
       </property>
        <property name="space" required="false">
         <property-ui type="textBox"
                      label="Space"
-                     description="Enter a space to replace in (if applicable for this catalog)"/>
+                     description="Enter a space to replace in (if applicable for this catalog)."/>
         </property>
       <property name="apicPath" required="false">
         <property-ui type="textBox"
-                     hidden="true"
                      label="APIC Tool Path"
                      default-value="${p?:component/apic.path}"
                      description="The full path or folder to the apic command-line tool. For example: C:\Users\John\AppData\Roaming\npm\apic.cmd"/>
+      </property>
+      <property name="loggerLevel">
+        <property-ui type="selectBox"
+                     hidden="true"
+                     label="Log4j Logging Level"
+                     default-value="INFO"
+                     description="Configure the level of Log4j messages to output to the console.
+                        Selecting 'PARAMETER' will try resolve the log4jLevel property in any
+                        UCD scope, and default to 'INFO' if log4jLevel is invalid or nonexistent."/>
+        <value label="PARAMETER">${p?:log4jLevel}</value>
+        <value label="ALL">ALL</value>
+        <value label="TRACE">TRACE</value>
+        <value label="DEBUG">DEBUG</value>
+        <value label="INFO">INFO</value>
+        <value label="WARN">WARN</value>
+        <value label="ERROR">ERROR</value>
+        <value label="FATAL">FATAL</value>
+        <value label="OFF">OFF</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -390,8 +541,103 @@
      ]]></post-processing>
     <command program="${GROOVY_HOME}/bin/groovy">
       <arg value="-cp"/>
-      <arg path="classes:lib/securedata.jar:lib/jettison-1.1.jar:lib/commons-codec.jar:lib/CommonsUtil.jar"/>
+      <arg path="classes:lib/securedata.jar:lib/jettison-1.1.jar:lib/commons-codec.jar:lib/CommonsUtil.jar:lib/log4j.jar"/>
       <arg file="productsReplace.groovy"/>
+      <arg file="${PLUGIN_INPUT_PROPS}"/>
+      <arg file="${PLUGIN_OUTPUT_PROPS}"/>
+    </command>
+  </step-type>
+  <step-type name="Supersede Product in Catalog">
+    <description>
+Supersede a published product in a catalog with another product (apic products:replace).
+The old product will be deprecated. The new product must be either staged, published, or deprecated.
+    </description>
+    <properties>
+      <property name="server" required="true">
+        <property-ui type="textBox"
+                     label="Server"
+                     default-value="${p:component/apic.server}"
+                     description="Specify the management server endpoint to set the variable on. 
+                        For example, the IBM Bluemix endpoint is us.apiconnect.ibmcloud.com."/>
+      </property>
+      <property name="organization" required="true">
+        <property-ui type="textBox"
+                     label="Organization"
+                     default-value="${p:component/apic.organization}"
+                     description="Provider organization name."/>
+      </property>
+      <property name="catalog" required="true">
+        <property-ui type="textBox"
+                     label="Catalog"
+                     default-value="${p:component/apic.catalog}"
+                     description="Catalog name containing the product to be replaced."/>
+      </property>
+      <property name="oldProduct" required="true">
+        <property-ui type="textBox"
+                     label="Old Product"
+                     default-value="${p:component/apic.oldProduct}"
+                     description="The old product that will be superseded. 
+                        Use the format: OLD_PRODUCT_NAME[:VERSION_NAME]. Note that the 
+                        :VERSION_NAME portion is optional. If you don't supply it, the
+                        first published version of the product will be replaced."/>
+      </property>
+      <property name="newProduct" required="true">
+        <property-ui type="textBox"
+                     label="New Product"
+                     default-value="${p:component/apic.newProduct}"
+                     description="The new product that will be superseding the old product. 
+                        Use the format: NEW_PRODUCT_NAME:VERSION_NAME."/>
+      </property>
+      <property name="plans" required="true">
+        <property-ui type="textAreaBox"
+                     label="Plan Mappings"
+                     default-value="${p:component/apic.planMappings}"
+                     description="A newline separated list of old to new product plan mappings 
+                        for superseding the product. Note that you must map all product plans.
+                        Use the format: SOURCE_PLAN_NAME:TARGET_PLAN_NAME"/>
+      </property>
+       <property name="space" required="false">
+        <property-ui type="textBox"
+                     label="Space"
+                     description="Enter a space to supersede in (if applicable for this catalog)."/>
+        </property>
+      <property name="apicPath" required="false">
+        <property-ui type="textBox"
+                     label="APIC Tool Path"
+                     default-value="${p?:component/apic.path}"
+                     description="The full path or folder to the apic command-line tool. For example: C:\Users\John\AppData\Roaming\npm\apic.cmd"/>
+      </property>
+      <property name="loggerLevel">
+        <property-ui type="selectBox"
+                     hidden="true"
+                     label="Log4j Logging Level"
+                     default-value="INFO"
+                     description="Configure the level of Log4j messages to output to the console.
+                        Selecting 'PARAMETER' will try resolve the log4jLevel property in any
+                        UCD scope, and default to 'INFO' if log4jLevel is invalid or nonexistent."/>
+        <value label="PARAMETER">${p?:log4jLevel}</value>
+        <value label="ALL">ALL</value>
+        <value label="TRACE">TRACE</value>
+        <value label="DEBUG">DEBUG</value>
+        <value label="INFO">INFO</value>
+        <value label="WARN">WARN</value>
+        <value label="ERROR">ERROR</value>
+        <value label="FATAL">FATAL</value>
+        <value label="OFF">OFF</value>
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+        if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp"/>
+      <arg path="classes:lib/securedata.jar:lib/jettison-1.1.jar:lib/commons-codec.jar:lib/CommonsUtil.jar:lib/log4j.jar"/>
+      <arg file="productsSupersede.groovy"/>
       <arg file="${PLUGIN_INPUT_PROPS}"/>
       <arg file="${PLUGIN_OUTPUT_PROPS}"/>
     </command>

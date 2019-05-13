@@ -1,91 +1,44 @@
-/**
- * (c) Copyright IBM Corporation 2016, 2017.
- * This is licensed under the following license.
- * The Eclipse Public 1.0 License (http://www.eclipse.org/legal/epl-v10.html)
- * U.S. Government Users Restricted Rights:  Use, duplication or disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
- */
+/*
+* Licensed Materials - Property of IBM Corp.
+* IBM UrbanCode Deploy
+* (c) Copyright IBM Corporation 2016. All Rights Reserved.
+*
+* U.S. Government Users Restricted Rights - Use, duplication or disclosure restricted by
+* GSA ADP Schedule Contract with IBM Corp.
+*/
 
 import com.urbancode.air.AirPluginTool
 import com.urbancode.air.CommandHelper
+import com.urbancode.air.ExitCodeException
 import com.urbancode.air.plugin.apic.APICHelper
-def apTool = new AirPluginTool(this.args[0], this.args[1])
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
 
-def props = apTool.getStepProperties()
+AirPluginTool apTool = new AirPluginTool(this.args[0], this.args[1])
 
-def server       = props['server']
-def organization = props['organization']
-def type         = props['type']
-def name         = props['name']
-def apicPath     = props['apicPath']
-def local = Boolean.valueOf(props['local'])
-def global = Boolean.valueOf(props['global'])
+Properties props = apTool.getStepProperties()
+int exitCode = 0
 
-final def isWindows = System.getProperty('os.name').contains("Windows")
+String logLevel = props['loggerLevel']
+Logger.getRootLogger().setLevel(Level.toLevel(logLevel, Level.INFO))
+Logger logger = Logger.getLogger(getClass())
 
-APICHelper helper = new APICHelper()
-def workDir = new File(".")
-def ch = new CommandHelper(workDir)
+String server = props['server']?.trim()
+String organization = props['organization']?.trim()
+String type = props['type']?.trim()
+String name = props['name']?.trim()
+String apicPath = props['apicPath']?.trim()
+boolean global = Boolean.valueOf(props['global'])
+boolean local = Boolean.valueOf(props['local'])
 
-def args = []
-if (apicPath) {
-    args = [apicPath, "config:set"]
-    if (local) {
-        args << "--local"
-    }
-    if (global) {
-        args << "--global"
-    }
-    args << "${type}=apic-${type}://${server}/orgs/${organization}/${type}s/${name}"
-}
-else {
-    if (isWindows) {
-        args = ["cmd", "/C"]
-    }
-    else {
-        args = ["/bin/bash", "-c"]
-    }
-    String commandStr = "apic config:set"
-    if (local) {
-        commandStr += " --local"
-    }
-    if (global) {
-        commandStr += " --global"
-    }
-    commandStr += " ${type}=apic-${type}://${server}/orgs/${organization}/${type}s/${name}"
-    args << commandStr
-}
-
-def exitCode
+APICHelper helper
 try {
-    exitCode = ch.runCommand("[Action] Setting the '${name}' ${type} configuration variable...", args, helper.getSystemOutput)
+    helper = APICHelper.createInstance(apicPath, server)
+    helper.setConfigVariable(organization, type, name, global, local)
 }
-catch (IOException ex) {
-    println "[Error] Unable to find the 'apic' command line tool."
-    println "[Possible Solution] Confirm the 'apic' command line tool is installed. " +
-                "Installation directions can be found on the API Connect troubleshooting documentation page."
-    ex.printStackTrace()
-    System.exit(1)
+catch (ExitCodeException ex) {
+    logger.error(ex.getMessage())
+    exitCode = 1
 }
-catch (Exception ex) {
-    // Error caught later
-    ex.printStackTrace()
-}
-finally {
-    // Print system output
-    def output = helper.systemOutput
-    println "================================"
-    println "API Connect Output..."
-    println output
-    println "================================"
 
-    // Regex is determine if the output contains the word "Error" - case insensitive.
-    if (output.matches(".*(?i)Error(.|\\n)*")){
-        println "[Error] Unable to run the 'apic config:set' command because of an invalid property."
-        println "[Possible Solution] Begin the process with the 'Login' step."
-        println "[Possible Solution] Confirm the server, organization, and app properties are valid."
-        System.exit(1)
-    }
-    else {
-        println "[OK] Successfully set the '${name}' ${type} configuration variable."
-    }
-}
+System.exit(exitCode)

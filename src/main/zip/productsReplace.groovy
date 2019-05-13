@@ -9,68 +9,35 @@ import com.urbancode.air.AirPluginTool
 import com.urbancode.air.CommandHelper
 import com.urbancode.air.ExitCodeException
 import com.urbancode.air.plugin.apic.APICHelper
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
 
+AirPluginTool apTool = new AirPluginTool(this.args[0], this.args[1])
 
-def apTool = new AirPluginTool(this.args[0], this.args[1])
+Properties props = apTool.getStepProperties()
+int exitCode = 0
 
-def props = apTool.getStepProperties()
+String logLevel = props['loggerLevel']
+Logger.getRootLogger().setLevel(Level.toLevel(logLevel, Level.INFO))
+Logger logger = Logger.getLogger(getClass())
 
-def oldProduct   = props['oldProduct']?.trim()
-def newProduct   = props['newProduct']?.trim()
-def plans        = props['plans']?.trim()
-def catalog      = props['catalog']?.trim()
-def server       = props['server']?.trim()
-def organization = props['organization']?.trim()
-def apicPath     = props['apicPath']?.trim()
-def space        = props['space']?.trim()
+String oldProduct = props['oldProduct']?.trim()
+String newProduct = props['newProduct']?.trim()
+List<String> plans = props['plans']?.split("\\r?\\n")*.trim()
+String catalog = props['catalog']?.trim()
+String server = props['server']?.trim()
+String organization = props['organization']?.trim()
+String space = props['space']?.trim()
+String apicPath = props['apicPath']?.trim()
 
-final Boolean isWindows = System.getProperty('os.name').contains("Windows")
-
-APICHelper helper = new APICHelper()
-File workDir = new File(".")
-CommandHelper ch = new CommandHelper(workDir)
-
-List<String> properties = ["products:replace", oldProduct, newProduct,
-        "--plans", plans,
-        // Bug in apic products:replace.
-        // It does not like the full names for catalog, server, and organization
-        "-c", catalog,
-        "-s", server,
-        "-o", organization
-    ]
-
-if(space) {
-    properties.push("--scope")
-    properties.push("space")
-    properties.push("--space")
-    properties.push(space)
-}
-
-List<String> args = helper.constructCommand(apicPath, properties)
-
+APICHelper helper
 try {
-    ch.runCommand("[Action] Replacing '${oldProduct}' with '${newProduct}' in Catalog...", args)
-}
-catch (IOException ex) {
-    println ""
-    println "[Error] Unable to find the 'apic' command line tool."
-    println "[Possible Solution] Confirm the 'apic' command line tool is installed. " +
-                "Installation directions can be found on the API Connect troubleshooting documentation page."
-    ex.printStackTrace()
-    System.exit(1)
+    helper = APICHelper.createInstance(apicPath, server)
+    helper.replaceProduct(oldProduct, newProduct, plans, catalog, organization, space)
 }
 catch (ExitCodeException ex) {
-    println ""
-    println "[Error] Unable to successfully complete the apic command. Review the above error for help."
-    println "[Possible Solution] Attempt to run the above apic command manually on the agent's terminal."
-    ex.printStackTrace()
-    System.exit(1)
-}
-catch (Exception ex) {
-    println ""
-    println "[Error] Unable to successfully complete the apic command."
-    ex.printStackTrace()
-    System.exit(1)
+    logger.error(ex.getMessage())
+    exitCode = 1
 }
 
-println "[OK] Successfully replaced the product '${oldProduct}' with ${newProduct} in API Connect."
+System.exit(exitCode)
