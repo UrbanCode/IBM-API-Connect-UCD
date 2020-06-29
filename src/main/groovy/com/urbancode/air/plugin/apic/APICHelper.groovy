@@ -102,7 +102,7 @@ public abstract class APICHelper {
             runCmd(args, true)
         }
         catch (ExitCodeException ex) {
-            logger.error('APIC command failed.', ex)
+            logger.warn('APIC command failed.', ex)
             return false
         }
 
