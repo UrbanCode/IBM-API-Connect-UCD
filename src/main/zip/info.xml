@@ -7,7 +7,7 @@
 -->
 <pluginInfo>
   <!-- Do not change the release-version, the build process injects it. -->
-  <release-version>#RELEASE_VERSION#</release-version>
+  <release-version>#v8_TRAIL#</release-version>
 
   <release-notes>
     <!--
@@ -50,6 +50,9 @@
     </release-note>
     <release-note plugin-version="7">
     Updated plugin to support API Connect 2018.
+    </release-note>
+    <release-note plugin-version="8">
+    Updated plugin to only support API Connect 10.0.x.
     </release-note>
   </release-notes>
 </pluginInfo>

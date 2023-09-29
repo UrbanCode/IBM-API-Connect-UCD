@@ -14,7 +14,10 @@ class APICv2018Helper extends APICHelper {
     }
 
     @Override
-    public void login(String username, String password, String realm) {
+    public void login(String username, String password, String realm, String apiKey) {
+        if (apiKey) {
+            logger.warn("Ignoring apiKey value '${apiKey}' since the v2018 toolkit is being used.")
+        }
         List<String> args = ["login", "--server", server, "--username", username,
             "--password", password, "--realm", realm]
 
@@ -35,14 +38,9 @@ class APICv2018Helper extends APICHelper {
     }
 
     @Override
-    public void pushApiDraft(
-        String organization,
-        String definition,
-        String replace,
-        boolean productOnly)
+    public void createProduct(String prodName)
     {
-        throw new ExitCodeException("The drafts:push command is not available with the v2018.x " +
-            "APIC toolkit.")
+        println("createProduct")
     }
 
     public void publishProduct(
@@ -82,11 +80,6 @@ class APICv2018Helper extends APICHelper {
                 "properties with quotes.")
             throw ex
         }
-    }
-
-    public void publishApp(File workDir, String app, String organization) {
-        throw new ExitCodeException("The apps:publish command is not available with the v2018.x " +
-            "APIC toolkit.")
     }
 
     @Override
