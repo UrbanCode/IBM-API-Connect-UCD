@@ -516,25 +516,29 @@ Create a new product using the create:product command in API connect v10.x.
         <property-ui type="textBox"
                      label="Product Name"
                      default-value=""
-                     description="Specify a name with which you want to craete a new Product in IBM API connect, Ex: test-product."/>
+                     description="Specify a name with which you want to craete a new Product in IBM API connect,
+                      Ex: test-product."/>
       </property>
       <property name="prodVersion" required="true">
         <property-ui type="textBox"
                      label="Product version"
                      default-value=""
-                     description="Specify a version with which you want to craete a new Product in IBM API connect, Ex: 1.0.0."/>
+                     description="Specify a version with which you want to craete a new Product in IBM API connect. 
+                      Ex: 1.0.0."/>
       </property>
       <property name="prodTitle" required="true">
         <property-ui type="textBox"
                      label="Product Title"
                      default-value=""
-                     description="Specify a title with which you want to craete a new Product in IBM API connect Ex: Test Product."/>
+                     description="Specify a title with which you want to craete a new Product in IBM API connect .
+                      Ex: Test Product."/>
       </property>
       <property name="apicPath" required="false">
         <property-ui type="textBox"
                      label="APIC Tool Path"
                      default-value="${p?:component/apic.path}"
-                     description="The full path or folder to the apic command-line tool. For example: C:\Users\John\AppData\Roaming\npm\apic.cmd"/>
+                     description="The full path or folder to the apic command-line tool. 
+                      For example: C:\Users\John\AppData\Roaming\npm\apic.cmd"/>
       </property>
       <property name="loggerLevel">
         <property-ui type="selectBox"
