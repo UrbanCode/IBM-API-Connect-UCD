@@ -48,7 +48,7 @@ class APICv10Helper extends APICHelper {
     }
 
     @Override
-    public void createProduct((String prodName, String prodVersion, String prodTitle))
+    public void createProduct(String prodName, String prodVersion, String prodTitle)
     {
         List<String> args = ["create:product", "--name", "\"$prodName\"", "--version", "\"$prodVersion\"", "--title", "\"$prodTitle\""]
         try {

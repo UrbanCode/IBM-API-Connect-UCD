@@ -38,7 +38,7 @@ class APICv2018Helper extends APICHelper {
     }
 
     @Override
-    public void createProduct(String prodName)
+    public void createProduct(String prodName, String prodVersion, String prodTitle)
     {
         println("createProduct")
     }
