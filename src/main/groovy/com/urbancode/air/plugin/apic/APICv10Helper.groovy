@@ -14,18 +14,17 @@ class APICv10Helper extends APICHelper {
 
     @Override
     public void login(String username, String password, String realm, String apiKey) {
-        if (realm) {
-            logger.warn("Ignoring realm value '${realm}' since the v10 toolkit is being used.")
+        if (!realm) {
+            logger.warn("realm value is not provided.")
         }
-
-        login(username, password, apiKey)
+        loginForV10(username, password, apiKey, realm)
     }
 
-    public void login(String username, String password, String apiKey) {
+    public void loginForV10(String username, String password, String apiKey, String realm) {
         List<String> args
         if (!password.isEmpty() || password.length() != 0) {
             args = ["login", "--server", server, "--username", username,
-            "--password", password]
+            "--password", password, "--realm", realm]
         }
         else if (!apiKey.isEmpty() || apiKey.length() != 0) {
             args = ["login", "--server", server, "--sso", "--context", "provider", "--apiKey", apiKey]
