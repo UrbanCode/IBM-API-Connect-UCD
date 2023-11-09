@@ -37,7 +37,7 @@ class APICv10Helper extends APICHelper {
         catch (ExitCodeException ex) {
             logger.error("Unable to run the 'apic login' command.")
             logger.info("[Possible Solution] Confirm server, username properties " +
-                "are correct. Please check if atlease one of these (either passowrd or api Key) is provided")
+                "are correct. Please check if atlease one of these (either password or api Key) is provided")
             logger.info("[Possible Solution] 'Unauthorized grant type...' error may indicate " +
                 "that the configuration properties are incorrectly set.")
             logger.info("[Possible Solution] 'Login through the command 'apic edit'. This " +
