@@ -49,8 +49,7 @@ This step is a prerequisite for all other steps in the IBM API Connect plug-in. 
                      label="Realm"
                      default-value="${p?:apic.realm}"
                      description="The identity provider used to authenticate and the scope of the tasks 
-                        that can be performed (I.E. provider/default-idp-2). This field is required 
-                        if using the API Connect v2018 toolkit."/>
+                        that can be performed (I.E. provider/default-idp-2)."/>
       </property>
       <property name="apicPath" required="false">
         <property-ui type="textBox"
@@ -500,9 +499,9 @@ The old product will be deprecated. The new product must be either staged, publi
       <arg file="${PLUGIN_OUTPUT_PROPS}"/>
     </command>
   </step-type>
-  <step-type name="Create a Product (v10.x)">
+  <step-type name="Create a Product">
     <description>
-Create a new product using the create:product command in API connect v10.x.
+Create a new product in API Connect (apic create:product).
     </description>    
     <properties>
       <property name="server" required="true">

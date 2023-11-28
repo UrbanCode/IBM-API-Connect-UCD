@@ -11,7 +11,6 @@ import com.urbancode.air.AirPluginTool
 import com.urbancode.air.CommandHelper
 import com.urbancode.air.ExitCodeException
 import com.urbancode.air.plugin.apic.APICHelper
-import com.urbancode.air.plugin.apic.APICv2018Helper
 import com.urbancode.air.plugin.apic.APICv10Helper
 import org.apache.log4j.Logger
 import org.apache.log4j.Level

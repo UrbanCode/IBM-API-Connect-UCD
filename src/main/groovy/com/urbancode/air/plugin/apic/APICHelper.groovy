@@ -37,18 +37,10 @@ public abstract class APICHelper {
         if (helper.isValidToolkit()) {
             logger.info("Detected API Connect version 10.x  Toolkit.")
             return helper
-        }
+        }        
         else {
-            helper = new APICv2018Helper(apicPath, server)
-
-            if (helper.isValidToolkit()) {
-                logger.info("Detected API Connect version 2018.x Toolkit.")
-                return helper
-            }
-            else {
-                throw new ExitCodeException("APIC toolkit with path '${apicPath}' is invalid.")
-            }
-        }
+            throw new ExitCodeException("APIC toolkit with path '${apicPath}' is invalid.")
+        }       
     }
 
     public void logout() {
