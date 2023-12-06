@@ -11,6 +11,7 @@ import com.urbancode.air.AirPluginTool
 import com.urbancode.air.CommandHelper
 import com.urbancode.air.ExitCodeException
 import com.urbancode.air.plugin.apic.APICHelper
+import com.urbancode.air.plugin.apic.APICv10Helper
 import org.apache.log4j.Logger
 import org.apache.log4j.Level
 
@@ -23,17 +24,17 @@ String logLevel = props['loggerLevel']
 Logger.getRootLogger().setLevel(Level.toLevel(logLevel, Level.INFO))
 Logger logger = Logger.getLogger(getClass())
 
-String apicPath     = props['apicPath']?.trim()
-String server       = props['server']?.trim()
-String organization = props['organization']?.trim()
-String definition   = props['definition']?.trim()
-String replace      = props['replace']?.trim()
-boolean productOnly  = Boolean.valueOf(props['productOnly'])
+String apicPath = props['apicPath']?.trim()
+String prodName = props['prodName']?.trim()
+String server = props['server']?.trim()
+
+String prodVersion = props['prodVersion']?.trim()
+String prodTitle = props['prodTitle']?.trim()
 
 APICHelper helper
 try {
     helper = APICHelper.createInstance(apicPath, server)
-    helper.pushApiDraft(organization, definition, replace, productOnly)
+    helper.createProduct(prodName, prodVersion, prodTitle)
 }
 catch (ExitCodeException ex) {
     logger.error(ex.getMessage())

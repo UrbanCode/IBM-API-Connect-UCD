@@ -32,23 +32,15 @@ public abstract class APICHelper {
     }
 
     public static APICHelper createInstance(apicPath, server) {
-        APICHelper helper = new APICv2018Helper(apicPath, server)
+        APICHelper helper = new APICv10Helper(apicPath, server)
 
         if (helper.isValidToolkit()) {
-            logger.info("Detected API Connect version 2018.x Toolkit.")
+            logger.info("Detected API Connect version 10.x  Toolkit.")
             return helper
-        }
+        }        
         else {
-            helper = new APICv5Helper(apicPath, server)
-
-            if (helper.isValidToolkit()) {
-                logger.info("Detected API Connect version 5.x Toolkit.")
-                return helper
-            }
-            else {
-                throw new ExitCodeException("APIC toolkit with path '${apicPath}' is invalid.")
-            }
-        }
+            throw new ExitCodeException("APIC toolkit with path '${apicPath}' is invalid.")
+        }       
     }
 
     public void logout() {
@@ -181,14 +173,12 @@ public abstract class APICHelper {
         return output
     }
 
-    public abstract void login(String username, String password, String realm)
-    public abstract void pushApiDraft(String organization, String definition, String replace,
-        boolean productOnly)
+    public abstract void login(String username, String password, String realm, String apiKey)
     public abstract void publishProduct(String organization, String catalog, String definition,
         String space, boolean stage)
-    public abstract void publishApp(File projDir, String app, String organization)
     public abstract void replaceProduct(String oldProduct, String newProduct, List<String> plans,
         String catalog, String organization, String space)
     public abstract void supersedeProduct(String oldProduct, String newProduct, List<String> plans,
         String catalog, String organization, String space)
+    public abstract void createProduct(String prodName, String prodVersion, String prodTitle)
 }

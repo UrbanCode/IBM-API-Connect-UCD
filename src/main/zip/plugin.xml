@@ -8,7 +8,7 @@
 
 <plugin xmlns="http://www.urbancode.com/PluginXMLSchema_v1" xmlns:server="http://www.urbancode.com/PluginServerXMLSchema_v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <header>
-    <identifier id="com.urbancode.air.plugin.apiconnect" name="IBM API Connect" version="7"/>
+    <identifier id="com.urbancode.air.plugin.apiconnect" name="IBM API Connect" version="8"/>
     <description>
       This plug-in includes steps to work with IBM API Connect when developing and publishing APIs and LoopBack applications.
     </description>
@@ -26,25 +26,30 @@ This step is a prerequisite for all other steps in the IBM API Connect plug-in. 
                      default-value="${p:component/apic.server}"
                      description="Specify the API Connect management server endpoint to authenticate with. For example, the IBM Bluemix endpoint is us.apiconnect.ibmcloud.com."/>
       </property>
-      <property name="username" required="true">
+      <property name="username" required="false">
         <property-ui type="textBox"
                      label="Username"
                      default-value="${p:apic.username}"
                      description="User name to use to authenticate with the API Connect management server."/>
       </property>
-      <property name="password" required="true">
+      <property name="password" required="false">
         <property-ui type="secureBox"
                      label="Password"
                      default-value="${p:apic.password}"
                      description="Password to use to authenticate with the API Connect management server."/>
+      </property>
+      <property name="apiKey" required="false">
+        <property-ui type="secureBox"
+                     label="API Key"
+                     default-value="${p:apic.apikey}"
+                     description="API Key used to authenticate with the API Connect management server."/>
       </property>
       <property name="realm" required="false">
         <property-ui type="textBox"
                      label="Realm"
                      default-value="${p?:apic.realm}"
                      description="The identity provider used to authenticate and the scope of the tasks 
-                        that can be performed (I.E. provider/default-idp-2). This field is required 
-                        if using the API Connect v2018 toolkit."/>
+                        that can be performed (I.E. provider/default-idp-2)."/>
       </property>
       <property name="apicPath" required="false">
         <property-ui type="textBox"
@@ -140,83 +145,6 @@ Run this step at the end of each deployment process. (apic logout)
       <arg file="${PLUGIN_OUTPUT_PROPS}"/>
     </command>
   </step-type>
-  <step-type name="Push API Product Definitions to Drafts (API Connect v5.x)">
-    <description>
-Push API product definitions to drafts on an API Connect cloud (apic drafts:push).
-WARNING: This command is no longer supported with API Connect v2018.x.
-    </description>
-    <properties>
-      <property name="server" required="true">
-        <property-ui type="textBox"
-                     label="Server"
-                     default-value="${p:component/apic.server}"
-                     description="Specify the management server endpoint to push to. For example, the IBM Bluemix endpoint is us.apiconnect.ibmcloud.com."/>
-      </property>
-      <property name="organization" required="true">
-        <property-ui type="textBox"
-                     label="Organization"
-                     default-value="${p:component/apic.organization}"
-                     description="Provider organization name."/>
-      </property>
-      <property name="definition" required="true">
-        <property-ui type="textBox"
-                     label="API Product Definitions"
-                     default-value="${p:component/apic.definition}"
-                     description="The full path to a YAML file that contains the API product definitions. Example: 'banking-services.yaml'."/>
-      </property>
-      <property name="replace" required="false">
-        <property-ui type="textBox"
-                     label="Replace Named Version"
-                     default-value="${p?:component/apic.replaceNameVersion}"
-                     description="Specify the name and version of a definition to replace. Use the following format: Name:Version. For example: climbon:1.0.0"/>
-      </property>
-      <property name="productOnly" required="false">
-        <property-ui type="checkBox"
-                     label="Product Only"
-                     default-value="false"
-                     description="Select to push the product only, and not the referenced APIs."/>
-      </property>
-      <property name="apicPath" required="false">
-        <property-ui type="textBox"
-                     label="APIC Tool Path"
-                     default-value="${p?:component/apic.path}"
-                     description="The full path to the apic command-line tool. For example: C:\Users\John\AppData\Roaming\npm\apic.cmd"/>
-      </property>
-      <property name="loggerLevel">
-        <property-ui type="selectBox"
-                     hidden="true"
-                     label="Log4j Logging Level"
-                     default-value="INFO"
-                     description="Configure the level of Log4j messages to output to the console.
-                        Selecting 'PARAMETER' will try resolve the log4jLevel property in any
-                        UCD scope, and default to 'INFO' if log4jLevel is invalid or nonexistent."/>
-        <value label="PARAMETER">${p?:log4jLevel}</value>
-        <value label="ALL">ALL</value>
-        <value label="TRACE">TRACE</value>
-        <value label="DEBUG">DEBUG</value>
-        <value label="INFO">INFO</value>
-        <value label="WARN">WARN</value>
-        <value label="ERROR">ERROR</value>
-        <value label="FATAL">FATAL</value>
-        <value label="OFF">OFF</value>
-      </property>
-    </properties>
-    <post-processing><![CDATA[
-        if (properties.get("exitCode") != 0) {
-            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
-        }
-        else {
-            properties.put("Status", "Success");
-        }
-     ]]></post-processing>
-    <command program="${GROOVY_HOME}/bin/groovy">
-      <arg value="-cp"/>
-      <arg path="classes:lib/securedata.jar:lib/jettison-1.1.jar:lib/commons-codec.jar:lib/CommonsUtil.jar:lib/log4j.jar"/>
-      <arg file="draftsPush.groovy"/>
-      <arg file="${PLUGIN_INPUT_PROPS}"/>
-      <arg file="${PLUGIN_OUTPUT_PROPS}"/>
-    </command>
-  </step-type>
   <step-type name="Publish API Product Definitions">
     <description>Publish API product and referenced APIs to a catalog. (apic products:publish)</description>
     <properties>
@@ -292,77 +220,6 @@ WARNING: This command is no longer supported with API Connect v2018.x.
       <arg value="-cp"/>
       <arg path="classes:lib/securedata.jar:lib/jettison-1.1.jar:lib/commons-codec.jar:lib/CommonsUtil.jar:lib/log4j.jar"/>
       <arg file="productsPublish.groovy"/>
-      <arg file="${PLUGIN_INPUT_PROPS}"/>
-      <arg file="${PLUGIN_OUTPUT_PROPS}"/>
-    </command>
-  </step-type>
-  <step-type name="Publish an Application (API Connect v5.x)">
-    <description>
-Publish a Node.js (LoopBack) application to a provider application (apic apps:publish).
-WARNING: This command is no longer supported with API Connect v2018.x.
-    </description>
-    <properties>
-      <property name="server" required="true">
-        <property-ui type="textBox"
-                     label="Server"
-                     default-value="${p:component/apic.server}"
-                     description="Specify the management server endpoint to publish to. For example, the IBM Bluemix endpoint is us.apiconnect.ibmcloud.com."/>
-      </property>
-      <property name="organization" required="true">
-        <property-ui type="textBox"
-                     label="Organization"
-                     default-value="${p:component/apic.organization}"
-                     description="Provider organization name."/>
-      </property>
-      <property name="app" required="true">
-        <property-ui type="textBox"
-                     label="Loopback Application"
-                     default-value="${p:component/apic.app}"
-                     description="LoopBack application name."/>
-      </property>
-      <property name="projDir" required="true">
-        <property-ui type="textBox"
-                     label="Loopback Project Directory"
-                     default-value="${p:component/apic.projDir}"
-                     description="The full path to the directory that contains the LoopBack application."/>
-      </property>
-      <property name="apicPath" required="false">
-        <property-ui type="textBox"
-                     label="APIC Tool Path"
-                     default-value="${p?:component/apic.path}"
-                     description="The full path to the apic command-line tool. For example: C:\Users\John\AppData\Roaming\npm\apic.cmd"/>
-      </property>
-      <property name="loggerLevel">
-        <property-ui type="selectBox"
-                     hidden="true"
-                     label="Log4j Logging Level"
-                     default-value="INFO"
-                     description="Configure the level of Log4j messages to output to the console.
-                        Selecting 'PARAMETER' will try resolve the log4jLevel property in any
-                        UCD scope, and default to 'INFO' if log4jLevel is invalid or nonexistent."/>
-        <value label="PARAMETER">${p?:log4jLevel}</value>
-        <value label="ALL">ALL</value>
-        <value label="TRACE">TRACE</value>
-        <value label="DEBUG">DEBUG</value>
-        <value label="INFO">INFO</value>
-        <value label="WARN">WARN</value>
-        <value label="ERROR">ERROR</value>
-        <value label="FATAL">FATAL</value>
-        <value label="OFF">OFF</value>
-      </property>
-    </properties>
-    <post-processing><![CDATA[
-        if (properties.get("exitCode") != 0) {
-            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
-        }
-        else {
-            properties.put("Status", "Success");
-        }
-     ]]></post-processing>
-    <command program="${GROOVY_HOME}/bin/groovy">
-      <arg value="-cp"/>
-      <arg path="classes:lib/securedata.jar:lib/jettison-1.1.jar:lib/commons-codec.jar:lib/CommonsUtil.jar:lib/log4j.jar"/>
-      <arg file="appsPublish.groovy"/>
       <arg file="${PLUGIN_INPUT_PROPS}"/>
       <arg file="${PLUGIN_OUTPUT_PROPS}"/>
     </command>
@@ -638,6 +495,81 @@ The old product will be deprecated. The new product must be either staged, publi
       <arg value="-cp"/>
       <arg path="classes:lib/securedata.jar:lib/jettison-1.1.jar:lib/commons-codec.jar:lib/CommonsUtil.jar:lib/log4j.jar"/>
       <arg file="productsSupersede.groovy"/>
+      <arg file="${PLUGIN_INPUT_PROPS}"/>
+      <arg file="${PLUGIN_OUTPUT_PROPS}"/>
+    </command>
+  </step-type>
+  <step-type name="Create a Product">
+    <description>
+Create a new product in API Connect (apic create:product).
+    </description>    
+    <properties>
+      <property name="server" required="true">
+        <property-ui type="textBox"
+                     label="Server"
+                     default-value="${p:component/apic.server}"
+                     description="Specify the management server endpoint to set the variable on. 
+                        For example, the IBM Bluemix endpoint is us.apiconnect.ibmcloud.com."/>
+      </property>
+      <property name="prodName" required="true">
+        <property-ui type="textBox"
+                     label="Product Name"
+                     default-value=""
+                     description="Specify a name with which you want to craete a new Product in IBM API connect,
+                      Ex: test-product."/>
+      </property>
+      <property name="prodVersion" required="true">
+        <property-ui type="textBox"
+                     label="Product version"
+                     default-value=""
+                     description="Specify a version with which you want to craete a new Product in IBM API connect. 
+                      Ex: 1.0.0."/>
+      </property>
+      <property name="prodTitle" required="true">
+        <property-ui type="textBox"
+                     label="Product Title"
+                     default-value=""
+                     description="Specify a title with which you want to craete a new Product in IBM API connect .
+                      Ex: Test Product."/>
+      </property>
+      <property name="apicPath" required="false">
+        <property-ui type="textBox"
+                     label="APIC Tool Path"
+                     default-value="${p?:component/apic.path}"
+                     description="The full path or folder to the apic command-line tool. 
+                      For example: C:\Users\John\AppData\Roaming\npm\apic.cmd"/>
+      </property>
+      <property name="loggerLevel">
+        <property-ui type="selectBox"
+                     hidden="true"
+                     label="Log4j Logging Level"
+                     default-value="INFO"
+                     description="Configure the level of Log4j messages to output to the console.
+                        Selecting 'PARAMETER' will try resolve the log4jLevel property in any
+                        UCD scope, and default to 'INFO' if log4jLevel is invalid or nonexistent."/>
+        <value label="PARAMETER">${p?:log4jLevel}</value>
+        <value label="ALL">ALL</value>
+        <value label="TRACE">TRACE</value>
+        <value label="DEBUG">DEBUG</value>
+        <value label="INFO">INFO</value>
+        <value label="WARN">WARN</value>
+        <value label="ERROR">ERROR</value>
+        <value label="FATAL">FATAL</value>
+        <value label="OFF">OFF</value>
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+        if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp"/>
+      <arg path="classes:lib/securedata.jar:lib/jettison-1.1.jar:lib/commons-codec.jar:lib/CommonsUtil.jar:lib/log4j.jar"/>
+      <arg file="createProduct.groovy"/>
       <arg file="${PLUGIN_INPUT_PROPS}"/>
       <arg file="${PLUGIN_OUTPUT_PROPS}"/>
     </command>

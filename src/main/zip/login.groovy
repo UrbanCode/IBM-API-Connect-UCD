@@ -11,8 +11,7 @@ import com.urbancode.air.AirPluginTool
 import com.urbancode.air.CommandHelper
 import com.urbancode.air.ExitCodeException
 import com.urbancode.air.plugin.apic.APICHelper
-import com.urbancode.air.plugin.apic.APICv2018Helper
-import com.urbancode.air.plugin.apic.APICv5Helper
+import com.urbancode.air.plugin.apic.APICv10Helper
 import org.apache.log4j.Logger
 import org.apache.log4j.Level
 
@@ -30,11 +29,12 @@ String server = props['server']?.trim()
 String username = props['username']?.trim()
 String password = props['password']?.trim()
 String realm = props['realm']?.trim()
+String apiKey = props['apiKey']?.trim()
 
 APICHelper helper
 try {
     helper = APICHelper.createInstance(apicPath, server)
-    helper.login(username, password, realm)
+    helper.login(username, password, realm, apiKey)
 }
 catch (ExitCodeException ex) {
     logger.error(ex.getMessage())

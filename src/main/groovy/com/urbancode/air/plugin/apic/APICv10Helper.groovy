@@ -2,49 +2,69 @@ package com.urbancode.air.plugin.apic
 
 import com.urbancode.air.ExitCodeException
 import org.apache.log4j.Logger
-
 import com.urbancode.air.plugin.apic.json.ProductParser
 
-class APICv2018Helper extends APICHelper {
+class APICv10Helper extends APICHelper {
 
-    public APICv2018Helper(String apicPath, String server) {
+    public APICv10Helper(String apicPath, String server) {
         super(apicPath, server)
         this.versionCmd = "version"
         logger = Logger.getLogger(getClass())
     }
 
     @Override
-    public void login(String username, String password, String realm) {
-        List<String> args = ["login", "--server", server, "--username", username,
-            "--password", password, "--realm", realm]
+    public void login(String username, String password, String realm, String apiKey) {
+        if (!realm) {
+            logger.warn("realm value is not provided.")
+        }
+        loginForV10(username, password, apiKey, realm)
+    }
 
+    public void loginForV10(String username, String password, String apiKey, String realm) {
+        List<String> args
+        if (!password.isEmpty() || password.length() != 0) {
+            args = ["login", "--server", server, "--username", username,
+            "--password", password, "--realm", realm]
+        }
+        else if (!apiKey.isEmpty() || apiKey.length() != 0) {
+            args = ["login", "--server", server, "--sso", "--context", "provider", "--apiKey", apiKey]
+        }
         try {
-            logger.info("Authenticating against server '${server}' and realm '${realm} " +
-                "with username '${username}'.")
+            logger.info("Authenticating against '${server}' with username '${username}'.")
             runCmd(args)
             logger.info("Authentication completed successfully.")
         }
         catch (ExitCodeException ex) {
             logger.error("Unable to run the 'apic login' command.")
-            logger.error("[Possible Solution] Confirm server, username, password, and realm " +
-                "properties are correct.")
-            logger.error("[Possible Solution] 'Unauthorized grant type...' error may indicate " +
+            logger.info("[Possible Solution] Confirm server, username properties " +
+                "are correct. Please check if atlease one of these (either password or api Key) is provided")
+            logger.info("[Possible Solution] 'Unauthorized grant type...' error may indicate " +
                 "that the configuration properties are incorrectly set.")
+            logger.info("[Possible Solution] 'Login through the command 'apic edit'. This " +
+                "authorization method will replace this 'Login' step.")
             throw ex
         }
     }
 
     @Override
-    public void pushApiDraft(
-        String organization,
-        String definition,
-        String replace,
-        boolean productOnly)
+    public void createProduct(String prodName, String prodVersion, String prodTitle)
     {
-        throw new ExitCodeException("The drafts:push command is not available with the v2018.x " +
-            "APIC toolkit.")
+        List<String> args = ["create:product", "--name", "\"$prodName\"", "--version", "\"$prodVersion\"", "--title", "\"$prodTitle\""]
+        try {
+            logger.info("Creating a product with name '${prodName}' as provided.")
+            runCmd(args)
+            logger.info("Successfully Created the product in API Connect.")
+        }
+        catch (ExitCodeException ex) {
+            logger.error("The 'apic create:product' command failed. Review the above error for " +
+                "help.")
+            logger.error("[Possible Solution] Attempt to run the above apic command manually on " +
+                "the agent's terminal.")
+            throw ex
+        }
     }
 
+    @Override
     public void publishProduct(
         String organization,
         String catalog,
@@ -82,11 +102,6 @@ class APICv2018Helper extends APICHelper {
                 "properties with quotes.")
             throw ex
         }
-    }
-
-    public void publishApp(File workDir, String app, String organization) {
-        throw new ExitCodeException("The apps:publish command is not available with the v2018.x " +
-            "APIC toolkit.")
     }
 
     @Override

@@ -85,4 +85,8 @@
       </migrate-properties>
     </migrate-command>
   </migrate>
+  <migrate to-version="8">
+    <migrate-command name="Create a Product">
+    </migrate-command>
+  </migrate>
 </plugin-upgrade>

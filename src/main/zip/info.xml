@@ -51,5 +51,8 @@
     <release-note plugin-version="7">
     Updated plugin to support API Connect 2018.
     </release-note>
+    <release-note plugin-version="8">
+    Updated plugin to only support API Connect 10.0.x.
+    </release-note>
   </release-notes>
 </pluginInfo>
